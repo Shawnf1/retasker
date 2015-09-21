@@ -105,7 +105,7 @@ app.controller('registerController', function($scope, $http, $location, $interva
 
 		$ajaxCall.fail(function (res) {
 			console.log("registration failed", res.responseText);
-			$scope.error = "Failed to register: "+ data;
+			$scope.error = "Failed to register: "+ res.responseText;
 			$timeout(function () {
 				$scope.error = "";
 			});
