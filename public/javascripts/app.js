@@ -46,9 +46,9 @@ app.controller('registerController', function($scope, $http){
 			first_name: $scope.firstName,
 			last_name: $scope.lastName
 		};
-		console.log("register", data);
+		//console.log("register", data);
 		$http.post('/register', data).then(function (data) {
-			console.log("done", data.data);
+			//console.log("done", data.data);
 		});
 	};
 });
