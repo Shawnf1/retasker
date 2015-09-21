@@ -4,11 +4,13 @@
 var mongoose = require('mongoose'),
 	Schema = mongoose.Schema,
 	bcrypt = require('bcrypt'),
+	jsonwebtoken = require('jsonwebtoken'),
 	SALT_WORK_FACTOR = 10;
 
 var UserSchema = new Schema({
 	username: {type: String, required: true, index: {unique: true}},
 	password: {type: String, required: true},
+	email: {type: String, required: true, index: {unique: true}},
 	first_name: String,
 	last_name: String,
 	created_on: Date,
@@ -53,5 +55,102 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
 		cb(null, isMatch);
 	});
 };
+/**
+ * Statics
+ */
 
+UserSchema.statics.getAuthenticated = function (user, callback) {
+	console.log('getAuthenticated', user);
+	this.findOne({username: user.username}, function (err, doc) {
+		if (err) {
+			console.log(err);
+			return callback(err);
+		}
+
+		// make sure the user exists
+		else if (!doc) {
+			console.log('No user found,');
+			return callback(new Error('Invalid username or password.', 401), null);
+		}
+		else {
+			// test for a matching password
+			doc.comparePassword(user.password, function (err, isMatch) {
+				if (err) {
+					console.log(err);
+					return callback(err);
+				}
+
+				// check if the password was a match
+				if (isMatch) {
+
+					// return the jwt
+					var token = jsonwebtoken.sign(doc, 'supersecret', {
+						expiresInMinutes: 1440 // expires in 24 hours
+					});
+					return callback(null, token, doc);
+				}
+				else {
+					return callback(new Error('Invalid username or password.'), null);
+
+				}
+			});
+		}
+	});
+};
+
+
+UserSchema.statics.Create = function (user, callback) {
+	if(user.password != user.password_confirm) {
+		return callback(new Error('Passwords do not match.'), null);
+	}
+	if(user.email != user.email_confirm) {
+		return callback(new Error('Emails do not match.'), null);
+	}
+	// find a user in Mongo with provided username
+	this.findOne({'username': user.username}, function (err, doc) {
+		// In case of any error return
+		if (err) {
+			return callback(err);
+		}
+		// already exists
+		if (doc) {
+			console.log("Username exists");
+			return callback(new Error('Username Already Exists'), null);
+		} else {
+			console.log("now to look for dup email ", user.email);
+			this.findOne({'email': user.email}, function (err2, doc2) {
+				if(err2) {
+					console.log("err2", err2);
+					return callback(err2);
+				}
+				if(doc2) {
+					console.log("Email exists");
+					return callback(new Error('Email Already Exists'), null);
+				}else{
+					console.log("checking failed, got to end", doc2);
+					// if there is no user with that username
+					// create the user
+					var User =  mongoose.model('User', UserSchema);
+					var newUser = new User({
+						password: user.password,
+						username: user.username,
+						email: user.email,
+						firstName: user.firstName,
+						lastName: user.lastName
+					});
+
+					// save the user
+					newUser.save(function (err) {
+						// In case of any error, return using the done method
+						if (err) {
+							return callback(err);
+						}
+						// User Registration succesful
+						return callback(null, newUser);
+					});
+				}
+			});
+		}
+	});
+};
 module.exports = mongoose.model('User', UserSchema);
