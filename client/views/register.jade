@@ -1,0 +1,18 @@
+form
+    fieldset
+        legend Register for a&nbsp
+            em
+                |FREE(!!!)
+            | &nbspaccount
+        div
+            input#username(type="text" name="username" placeholder="Username" ng-model="username")
+        div
+            input#password(type="password" name="password" placeholder="Password" ng-model="password")
+        div
+            input#password(type="email" name="email" placeholder="Email" ng-model="email")
+        div
+            input#FirstName(type="text" name="first_name" placeholder="First Name" ng-model="firstName")
+        div
+            input#LastName(type="text" name="last_name" placeholder="Last Name" ng-model="lastName")
+        div
+            button(ng-click="register($event)") Register

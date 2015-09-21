@@ -1,0 +1,17 @@
+extends layout
+block content
+    header
+        nav(class="navbar navbar-default")
+            div(class="container")
+                div(class="navbar-header")
+                    a(class="navbar-brand" href="/") Task Manager
+            ul(class="nav navbar-nav navbar-right")
+                li
+                    a(href="/") Home
+                li
+                    a(href="/about") Tasks
+                li
+                    a(href="/contact") Notes
+    #main
+        <!-- ng-view will display injected content -->
+        div(ng-view)
