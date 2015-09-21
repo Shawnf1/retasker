@@ -1,15 +1,15 @@
 .jumbotron.text-center
     h2 {{message}}
 
-form(action="/" method="post")
+form
     fieldset
         legend Enter your login credentials
         div
             label(for="username") Username:
-            input#username(type="text" name="username")
+            input#username(type="text" name="username" ng-model="username" required="true")
         div
             label(for="password") Password:
-            input#password(type="password" name="password")
+            input#password(type="password" name="password" ng-model="password" required="true")
         div
-            button Log In
+            button(ng-click="login($event)") Log In
             a(href="/register") |Register

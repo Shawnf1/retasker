@@ -8,10 +8,12 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
 var localStrategy = require('passport-local').Strategy;
+var expressJwt = require('express-jwt');
 
 var index = require('./routes/index');
+var authenticate = require('./routes/authenticate');
 //var users = require('./routes/users');
-//var register = require('./routes/register');
+var register = require('./routes/register');
 
 var app = express();
 
@@ -28,8 +30,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
+app.use('/authenticate', authenticate);
 //app.use('/users', users);
-//app.use('/register', register);
+app.use('/register', register);
 
 app.use(session({
 	secret: 'secret',

@@ -23,8 +23,18 @@ app.config(function($routeProvider, $locationProvider){
 		})
 });
 
-app.controller('mainController', function($scope){
+app.controller('mainController', function($scope, $http){
 	$scope.message = "Welcome to Task Manager!";
+	$scope.login = function (event) {
+		var user = {
+			username: $scope.username,
+			password: $scope.password
+		};
+		console.log('login clicked', user);
+		$http.post('/authenticate', user).then(function (data) {
+			console.log("done", data.data);
+		});
+	};
 });
 
 app.controller('taskController', function($scope){
@@ -35,7 +45,7 @@ app.controller('noteController', function($scope){
 	$scope.message = "Here are your notes!";
 });
 
-app.controller('registerController', function($scope, $http){
+app.controller('registerController', function($scope, $http, $location){
 	//$scope.message = "Here are your notes!";
 	//console.log($scope.)
 	$scope.register = function (event) {
@@ -49,6 +59,7 @@ app.controller('registerController', function($scope, $http){
 		//console.log("register", data);
 		$http.post('/register', data).then(function (data) {
 			//console.log("done", data.data);
+			$location.path('/');
 		});
 	};
 });
