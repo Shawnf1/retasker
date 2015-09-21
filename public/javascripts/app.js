@@ -99,9 +99,13 @@ app.controller('registerController', function($scope, $http, $location){
 	};
 });
 
-app.controller('logoutController', function($scope, $location, $timeout) {
+app.controller('logoutController', function($scope, $location, $timeout, $interval) {
 	$scope.message = "You have been logged out...";
+	$scope.countdown = 3;
 	localStorage.removeItem('userToken');
+	$interval(function () {
+		$scope.countdown--;
+	}, 1000, 3);
 	$timeout(function () {
 		$location.path('/');
 	}, 3000);
