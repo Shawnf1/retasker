@@ -1,9 +1,10 @@
 var app = angular.module('taskApp', ['ngRoute']);
 
 app.config(function($routeProvider, $locationProvider){
+	// clear out local storage on load
+	//localStorage.reset();
 
 	$locationProvider.html5Mode(true);
-
 	$routeProvider.when('/',
 		{
 			templateUrl: '/views/login.html',
@@ -32,6 +33,9 @@ app.config(function($routeProvider, $locationProvider){
 });
 
 app.controller('loginController', function($scope, $http, $location){
+	//$('.auth').attr('disabled', true);
+	//$('#error_div').append($('<p>').text("failure"));
+
 	$scope.message = "Welcome to Task Manager!";
 	$scope.subtitle = "Please login to continue...";
 	$scope.login = function () {
@@ -52,18 +56,21 @@ app.controller('loginController', function($scope, $http, $location){
 });
 
 app.controller('mainController', function($scope){
+	$('.auth').prop('disabled', false);
 	$scope.message = "Welcome Home!";
 });
 
 app.controller('taskController', function($scope){
+	$('.auth').prop('disabled', false);
 	$scope.message = "Here are your tasks!";
 });
 
 app.controller('noteController', function($scope){
+	$('.auth').prop('disabled', false);
 	$scope.message = "Here are your notes!";
 });
 
-app.controller('registerController', function($scope, $http, $location){
+app.controller('registerController', function($scope, $http, $location, $interval, $timeout){
 	//$scope.message = "Here are your notes!";
 	//console.log($scope.)
 	$scope.register = function (event) {
@@ -84,11 +91,24 @@ app.controller('registerController', function($scope, $http, $location){
 		});
 
 		$ajaxCall.done(function (res) {
-			$location.path('/');
+			//$('#message').append($('<p>').text('Successfully registered for an account! Redirecting to login in ').append($('<span>')));
+			//$scope.successAlert('<strong>Successfully registered for an account!</strong> Please login to continue');
+			$scope.success = "Successfully registered for an account! Redirecting to login in ";
+			$scope.time = 3;
+			$interval(function () {
+				$scope.time--;
+			}, 1000, 3);
+			$timeout(function () {
+				$location.path('/');
+			}, 3000);
 		});
 
 		$ajaxCall.fail(function (res) {
 			console.log("registration failed", res.responseText);
+			$scope.error = "Failed to register: "+ data;
+			$timeout(function () {
+				$scope.error = "";
+			});
 		});
 	//}.then(function (data) {
 	//		console.log("done", data.data);
@@ -100,6 +120,7 @@ app.controller('registerController', function($scope, $http, $location){
 });
 
 app.controller('logoutController', function($scope, $location, $timeout, $interval) {
+	$('.auth').prop('disabled', true);
 	$scope.message = "You have been logged out...";
 	$scope.countdown = 3;
 	localStorage.removeItem('userToken');

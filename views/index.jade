@@ -8,11 +8,11 @@ block content
             ul(class="nav navbar-nav navbar-right")
                 li
                     a(href="/") Home
-                li
-                    a(href="/about") Tasks
-                li
-                    a(href="/contact") Notes
-                li
+                li.auth
+                    a(href="/tasks") Tasks
+                li.auth
+                    a(href="/notes") Notes
+                li.auth.logout
                     a(href="/logout") Logout
     #main
         <!-- ng-view will display injected content -->

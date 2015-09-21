@@ -65,14 +65,11 @@ UserSchema.statics.getAuthenticated = function (user, callback) {
 		if (err) {
 			console.log(err);
 			return callback(err);
-		}
-
-		// make sure the user exists
-		else if (!doc) {
+		} else if (!doc) {// make sure the user exists
 			console.log('No user found,');
 			return callback(new Error('Invalid username or password.', 401), null);
-		}
-		else {
+		} else {// user exists, no errors
+
 			// test for a matching password
 			doc.comparePassword(user.password, function (err, isMatch) {
 				if (err) {
@@ -84,7 +81,7 @@ UserSchema.statics.getAuthenticated = function (user, callback) {
 				if (isMatch) {
 
 					// return the jwt
-					var token = jsonwebtoken.sign(doc, 'supersecret', {
+					var token = jsonwebtoken.sign(doc, 'Über_spaß_token', {
 						expiresInMinutes: 1440 // expires in 24 hours
 					});
 					return callback(null, token, doc);
@@ -100,9 +97,11 @@ UserSchema.statics.getAuthenticated = function (user, callback) {
 
 
 UserSchema.statics.Create = function (user, callback) {
+	// first check that passwords match before continuing
 	if(user.password != user.password_confirm) {
 		return callback(new Error('Passwords do not match.'), null);
 	}
+	// second check that emails match
 	if(user.email != user.email_confirm) {
 		return callback(new Error('Emails do not match.'), null);
 	}
@@ -112,43 +111,44 @@ UserSchema.statics.Create = function (user, callback) {
 		if (err) {
 			return callback(err);
 		}
-		// already exists
+		// username already exists
 		if (doc) {
 			console.log("Username exists");
 			return callback(new Error('Username Already Exists'), null);
-		} else {
-			console.log("now to look for dup email ", user.email);
-			this.findOne({'email': user.email}, function (err2, doc2) {
-				if(err2) {
-					console.log("err2", err2);
-					return callback(err2);
-				}
-				if(doc2) {
-					console.log("Email exists");
-					return callback(new Error('Email Already Exists'), null);
-				}else{
-					console.log("checking failed, got to end", doc2);
-					// if there is no user with that username
-					// create the user
-					var User =  mongoose.model('User', UserSchema);
-					var newUser = new User({
-						password: user.password,
-						username: user.username,
-						email: user.email,
-						firstName: user.firstName,
-						lastName: user.lastName
-					});
+		}
+	});
 
-					// save the user
-					newUser.save(function (err) {
-						// In case of any error, return using the done method
-						if (err) {
-							return callback(err);
-						}
-						// User Registration succesful
-						return callback(null, newUser);
-					});
+	// find a user in Mongo with provided email
+	this.findOne({'email': user.email}, function (err, doc) {
+		if(err) {
+			console.log("err", err);
+			return callback(err);
+		}
+		// if email exists
+		if(doc) {
+			console.log("Email exists");
+			return callback(new Error('Email Already Exists'), null);
+		}else{
+			console.log("checking failed, got to end", doc);
+			// if there is no user with that username
+			// create the user
+			var User =  mongoose.model('User', UserSchema);
+			var newUser = new User({
+				password: user.password,
+				username: user.username,
+				email: user.email,
+				firstName: user.firstName,
+				lastName: user.lastName
+			});
+
+			// save the user
+			newUser.save(function (err) {
+				// In case of any error, return using the done method
+				if (err) {
+					return callback(err);
 				}
+				// User Registration successful
+				return callback(null, newUser);
 			});
 		}
 	});
