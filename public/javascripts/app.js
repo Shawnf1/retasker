@@ -175,7 +175,7 @@ app.controller('registerCtrl', ['$scope', '$http', '$location', '$interval', '$t
 }]);
 
 app.controller('navCtrl', ['authService','$scope','$rootScope','$location', function(authService, $scope,$rootScope, $location){
-	$rootScope.user = authService.getUser();
+	//$rootScope.user = authService.getUser();
 
 	if($rootScope.user && $rootScope.user.username){
 		$location.path('/home');
@@ -223,7 +223,9 @@ app.service('authService', ['$window', function ($window) {
 	};
 
 	this.isAuthed = function () {
-		var token = this.getToken();
+		//var token = this.getToken();
+		var token = (this.getToken() !== "undefined") ? this.getToken() : false;
+		//console.log("authed begin", token);
 		if (token) {
 			var params = this.parseJwt(token);
 			var notExpired = Math.round(new Date().getTime() / 1000) <= params.exp;
