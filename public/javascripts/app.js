@@ -1,6 +1,6 @@
 var app = angular.module('taskApp', ['ngRoute']);
 
-app.config(function($routeProvider, $locationProvider){
+app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider){
 	// clear out local storage on load
 	//localStorage.reset();
 
@@ -8,31 +8,35 @@ app.config(function($routeProvider, $locationProvider){
 	$routeProvider.when('/',
 		{
 			templateUrl: '/views/login.html',
-			controller: 'loginController'
+			controller: 'loginCtrl'
 		}).when('/home',
 		{
 			templateUrl: '/views/home.html',
-			controller: 'mainController'
+			controller: 'mainCtrl'
 		}).when('/task',
 		{
 			templateUrl: '/views/tasks.html',
-			controller: 'taskController'
+			controller: 'taskCtrl'
 		}).when('/note',
 		{
 			templateUrl: '/views/notes.html',
-			controller: 'noteController'
+			controller: 'noteCtrl'
 		}).when('/register',
 		{
 			templateUrl: '/views/register.html',
-			controller: 'registerController'
+			controller: 'registerCtrl'
 		}).when('/logout',
 		{
 			templateUrl: '/views/logout.html',
-			controller: 'logoutController'
-		})
-});
+			controller: 'logoutCtrl'
+		}).otherwise({
+			redirectTo: '/'
+		});
 
-app.controller('loginController', ['$scope', '$http', '$location', function($scope, $http, $location){
+	$httpProvider.interceptors.push('authInterceptor');
+}]);
+
+app.controller('loginCtrl', ['$scope', '$http', '$location', function($scope, $http, $location){
 	//$('.auth').attr('disabled', true);
 	//$('#error_div').append($('<p>').text("failure"));
 
@@ -55,22 +59,22 @@ app.controller('loginController', ['$scope', '$http', '$location', function($sco
 	};
 }]);
 
-app.controller('mainController', ['$scope', function($scope){
+app.controller('mainCtrl', ['$scope', function($scope){
 	$('.auth').prop('disabled', false);
 	$scope.message = "Welcome Home!";
 }]);
 
-app.controller('taskController', ['$scope', function($scope){
+app.controller('taskCtrl', ['$scope', function($scope){
 	$('.auth').prop('disabled', false);
 	$scope.message = "Here are your tasks!";
 }]);
 
-app.controller('noteController', ['$scope', function($scope){
+app.controller('noteCtrl', ['$scope', function($scope){
 	$('.auth').prop('disabled', false);
 	$scope.message = "Here are your notes!";
 }]);
 
-app.controller('registerController', ['$scope', '$http', '$location', '$interval', '$timeout', function($scope, $http, $location, $interval, $timeout){
+app.controller('registerCtrl', ['$scope', '$http', '$location', '$interval', '$timeout', function($scope, $http, $location, $interval, $timeout){
 	$scope.register = function () {
 		var data = {
 			username: $scope.username,
@@ -91,6 +95,7 @@ app.controller('registerController', ['$scope', '$http', '$location', '$interval
 		$ajaxCall.done(function (res) {
 			$scope.success = "Successfully registered for an account! Redirecting to login in ";
 			$scope.time = 3;
+			$scope.$apply();
 			$interval(function () {
 				$scope.time--;
 			}, 1000, 3);
@@ -101,17 +106,20 @@ app.controller('registerController', ['$scope', '$http', '$location', '$interval
 
 		//$scope.error = "Test error";
 		$ajaxCall.fail(function (res) {
-			alert(res.responseText);
+			//alert(res.responseText);
 			//$scope.success = res.responseText;
 			$scope.error = res.responseText;
 			//$scope.setError(res.responseText);
 			$scope.$apply();
-			console.log("registration failed (msg): ", res.responseText);
+			//console.log("registration failed (msg): ", res.responseText);
+			$timeout(function () {
+				$scope.error = "";
+			}, 3000);
 		});
 
 		$ajaxCall.always(function (res) {
-			console.log("AJAX complete");
-			$scope.success = "Always: "+ res.responseText;
+			//console.log("AJAX complete");
+			//$scope.success = "Always: "+ res.responseText;
 		});
 	};
 
@@ -120,7 +128,7 @@ app.controller('registerController', ['$scope', '$http', '$location', '$interval
 	//};
 }]);
 
-app.controller('logoutController', ['$scope', '$location', '$timeout', '$interval', function($scope, $location, $timeout, $interval) {
+app.controller('logoutCtrl', ['$scope', '$location', '$timeout', '$interval', function($scope, $location, $timeout, $interval) {
 	$('.auth').prop('disabled', true);
 	$scope.message = "You have been logged out...";
 	$scope.countdown = 3;
@@ -131,4 +139,90 @@ app.controller('logoutController', ['$scope', '$location', '$timeout', '$interva
 	$timeout(function () {
 		$location.path('/');
 	}, 3000);
+}]);
+
+app.controller('naCtrl', ['authService', '$scope', '$rootScope', '$location', function(authService, $scope, $rootScope, $location) {
+	$rootScope.use = authService.getUser();
+
+	if($rootScope.user && $rootScope.user.username){
+		$location.path('/home');
+	}
+
+	$scope.logout = function(){
+		authService.logout();
+		$rootScope.user = authService.getUser();
+		$location.path("/login");
+	}
+}]);
+
+app.service('authService', ['$window', function ($window) {
+
+	this.parseJwt = function (token) {
+		if (token) {
+			var base64Url = token.split('.')[1];
+			var base64 = base64Url.replace('-', '+').replace('_', '/');
+			return JSON.parse($window.atob(base64));
+		} else return {};
+	};
+
+	this.saveToken = function (token) {
+		$window.localStorage.jwtToken = token;
+		console.log('Saved token:',$window.localStorage.jwtToken);
+	};
+
+	this.getToken = function () {
+		return $window.localStorage.jwtToken;
+	};
+
+	this.isAuthed = function () {
+		var token = this.getToken();
+		if (token) {
+			var params = this.parseJwt(token);
+			var notExpired = Math.round(new Date().getTime() / 1000) <= params.exp;
+			if (!notExpired) {
+				this.logout();
+			}
+			return notExpired;
+		} else {
+			return false;
+		}
+	};
+
+	this.logout = function () {
+		delete $window.localStorage.jwtToken;
+	};
+
+	// expose user as an object
+	this.getUser = function () {
+		return this.parseJwt(this.getToken())
+	};
+}]);
+
+app.factory('authInterceptor', ['$q', '$location', 'authService', function ($q, $location, authService) {
+	return {
+		request: function (config) {
+			config.headers = config.headers || {};
+			if (authService.isAuthed()) {
+				config.headers.Authorization = 'Bearer ' + authService.getToken();
+			}
+			return config;
+		},
+		response: function (response) {
+
+			if (response.status === 401) {
+
+				// handle the case where the user is not authenticated
+				$location.path("/login");
+			}
+			return response || $q.when(response);
+		}, responseError: function (response) {
+			if (response.status === 401) {
+				$location.path("/login");
+
+			} else {
+				console.log(response);
+			}
+			return $q.reject(response);
+		}
+	};
 }]);
