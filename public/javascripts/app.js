@@ -32,7 +32,7 @@ app.config(function($routeProvider, $locationProvider){
 		})
 });
 
-app.controller('loginController', function($scope, $http, $location){
+app.controller('loginController', ['$scope', '$http', '$location', function($scope, $http, $location){
 	//$('.auth').attr('disabled', true);
 	//$('#error_div').append($('<p>').text("failure"));
 
@@ -53,30 +53,25 @@ app.controller('loginController', function($scope, $http, $location){
 			$location.path('/home');
 		});
 	};
-});
+}]);
 
-app.controller('mainController', function($scope){
+app.controller('mainController', ['$scope', function($scope){
 	$('.auth').prop('disabled', false);
 	$scope.message = "Welcome Home!";
-});
+}]);
 
-app.controller('taskController', function($scope){
+app.controller('taskController', ['$scope', function($scope){
 	$('.auth').prop('disabled', false);
 	$scope.message = "Here are your tasks!";
-});
+}]);
 
-app.controller('noteController', function($scope){
+app.controller('noteController', ['$scope', function($scope){
 	$('.auth').prop('disabled', false);
 	$scope.message = "Here are your notes!";
-});
+}]);
 
-app.controller('registerController', function($scope, $http, $location, $interval, $timeout){
-	//$scope.message = "Here are your notes!";
-	//console.log($scope.)
-	//$scope.error = "Test error";
-	//$scope.success = "Test success";
+app.controller('registerController', ['$scope', '$http', '$location', '$interval', '$timeout', function($scope, $http, $location, $interval, $timeout){
 	$scope.register = function () {
-		console.log("Clicked register");
 		var data = {
 			username: $scope.username,
 			password: $scope.password,
@@ -86,49 +81,46 @@ app.controller('registerController', function($scope, $http, $location, $interva
 			first_name: $scope.firstName,
 			last_name: $scope.lastName
 		};
-		console.log("register", data);
+		//console.log("register", data);
+		var $ajaxCall = $.ajax({
+			url: '/register',
+			data: data,
+			method: 'POST'
+		});
 
-		$ajaxCall = $interval(function () {
-			var $ajaxCall = $.ajax({
-				url: '/register',
-				data: data,
-				method: 'POST'
-			});
+		$ajaxCall.done(function (res) {
+			$scope.success = "Successfully registered for an account! Redirecting to login in ";
+			$scope.time = 3;
+			$interval(function () {
+				$scope.time--;
+			}, 1000, 3);
+			$timeout(function () {
+				$location.path('/');
+			}, 3000);
+		});
 
-			$ajaxCall.done(function (res) {
-				//$('#message').append($('<p>').text('Successfully registered for an account! Redirecting to login in ').append($('<span>')));
-				//$scope.successAlert('<strong>Successfully registered for an account!</strong> Please login to continue');
-				$scope.success = "Successfully registered for an account! Redirecting to login in ";
-				$scope.time = 3;
-				$interval(function () {
-					$scope.time--;
-				}, 1000, 3);
-				$timeout(function () {
-					$location.path('/');
-				}, 3000);
-			});
+		//$scope.error = "Test error";
+		$ajaxCall.fail(function (res) {
+			alert(res.responseText);
+			//$scope.success = res.responseText;
+			$scope.error = res.responseText;
+			//$scope.setError(res.responseText);
+			$scope.$apply();
+			console.log("registration failed (msg): ", res.responseText);
+		});
 
-			//$scope.error = "Test error";
-			//$scope.success = "Test success";
-			$ajaxCall.fail(function (res) {
-				//if(res.statusCode == 400) {
-				//	console.log("400 error");
-				//}
-				//alert(res.responseText);
-				$scope.error = res.responseText;
-				//$scope.success = res.responseText;
-				//$scope.error = "Registration failed: "+ res.responseText;
-				console.log("registration failed", res.responseText);
-				//$scope.error = "Test error";
-				//$timeout(function () {
-				//	$scope.error = "";
-				//}, 3000);
-			});
-		}, 100, 2);
+		$ajaxCall.always(function (res) {
+			console.log("AJAX complete");
+			$scope.success = "Always: "+ res.responseText;
+		});
 	};
-});
 
-app.controller('logoutController', function($scope, $location, $timeout, $interval) {
+	//$scope.setError = function (err) {
+	//	$scope.error = err;
+	//};
+}]);
+
+app.controller('logoutController', ['$scope', '$location', '$timeout', '$interval', function($scope, $location, $timeout, $interval) {
 	$('.auth').prop('disabled', true);
 	$scope.message = "You have been logged out...";
 	$scope.countdown = 3;
@@ -139,4 +131,4 @@ app.controller('logoutController', function($scope, $location, $timeout, $interv
 	$timeout(function () {
 		$location.path('/');
 	}, 3000);
-});
+}]);
