@@ -129,7 +129,7 @@ UserSchema.statics.Create = function (user, callback) {
 					console.log("Email exists");
 					return callback(new Error('Email Already Exists'), null);
 				}else{
-					console.log("checking failed, got to end", doc);
+					//console.log("checking failed, got to end", doc);
 					// if there is no user with that username
 					// create the user
 					var User =  mongoose.model('User', UserSchema);

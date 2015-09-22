@@ -1,10 +1,10 @@
 #message
     span.error
-        |{{ error }}
+        | {{ error }}
     span.success
         | {{ success }} {{ time }}
 
-form
+form(ng-submit="register()")
     fieldset
         legend Register for a&nbsp
             em
@@ -25,4 +25,4 @@ form
         div
             input#LastName(type="text" name="last_name" placeholder="Last Name" ng-model="lastName")
         div
-            button(ng-click="register($event)") Register
+            input(type="submit" value="Register")

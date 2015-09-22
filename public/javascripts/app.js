@@ -13,11 +13,11 @@ app.config(function($routeProvider, $locationProvider){
 		{
 			templateUrl: '/views/home.html',
 			controller: 'mainController'
-		}).when('/about',
+		}).when('/task',
 		{
 			templateUrl: '/views/tasks.html',
 			controller: 'taskController'
-		}).when('/contact',
+		}).when('/note',
 		{
 			templateUrl: '/views/notes.html',
 			controller: 'noteController'
@@ -73,7 +73,10 @@ app.controller('noteController', function($scope){
 app.controller('registerController', function($scope, $http, $location, $interval, $timeout){
 	//$scope.message = "Here are your notes!";
 	//console.log($scope.)
-	$scope.register = function (event) {
+	//$scope.error = "Test error";
+	//$scope.success = "Test success";
+	$scope.register = function () {
+		console.log("Clicked register");
 		var data = {
 			username: $scope.username,
 			password: $scope.password,
@@ -84,38 +87,44 @@ app.controller('registerController', function($scope, $http, $location, $interva
 			last_name: $scope.lastName
 		};
 		console.log("register", data);
-		var $ajaxCall = $.ajax({
-			url: '/register',
-			data: data,
-			method: 'POST'
-		});
 
-		$ajaxCall.done(function (res) {
-			//$('#message').append($('<p>').text('Successfully registered for an account! Redirecting to login in ').append($('<span>')));
-			//$scope.successAlert('<strong>Successfully registered for an account!</strong> Please login to continue');
-			$scope.success = "Successfully registered for an account! Redirecting to login in ";
-			$scope.time = 3;
-			$interval(function () {
-				$scope.time--;
-			}, 1000, 3);
-			$timeout(function () {
-				$location.path('/');
-			}, 3000);
-		});
-
-		$ajaxCall.fail(function (res) {
-			console.log("registration failed", res.responseText);
-			$scope.error = "Failed to register: "+ res.responseText;
-			$timeout(function () {
-				$scope.error = "";
+		$ajaxCall = $interval(function () {
+			var $ajaxCall = $.ajax({
+				url: '/register',
+				data: data,
+				method: 'POST'
 			});
-		});
-	//}.then(function (data) {
-	//		console.log("done", data.data);
-			//$location.path('/');
-		//}, function (data) {
-		//	console.log("registration failed ", data);
-		//});
+
+			$ajaxCall.done(function (res) {
+				//$('#message').append($('<p>').text('Successfully registered for an account! Redirecting to login in ').append($('<span>')));
+				//$scope.successAlert('<strong>Successfully registered for an account!</strong> Please login to continue');
+				$scope.success = "Successfully registered for an account! Redirecting to login in ";
+				$scope.time = 3;
+				$interval(function () {
+					$scope.time--;
+				}, 1000, 3);
+				$timeout(function () {
+					$location.path('/');
+				}, 3000);
+			});
+
+			//$scope.error = "Test error";
+			//$scope.success = "Test success";
+			$ajaxCall.fail(function (res) {
+				//if(res.statusCode == 400) {
+				//	console.log("400 error");
+				//}
+				//alert(res.responseText);
+				$scope.error = res.responseText;
+				//$scope.success = res.responseText;
+				//$scope.error = "Registration failed: "+ res.responseText;
+				console.log("registration failed", res.responseText);
+				//$scope.error = "Test error";
+				//$timeout(function () {
+				//	$scope.error = "";
+				//}, 3000);
+			});
+		}, 100, 2);
 	};
 });
 
