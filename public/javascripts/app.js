@@ -47,39 +47,58 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authSe
 			username: $scope.username,
 			password: $scope.password
 		};
-		//console.log('login clicked', user);
-		var $ajaxCall = $.ajax({
-			url: '/authenticate',
-			method: 'POST',
-			data: user
-		});
 
-		$ajaxCall.done(function (res) {
-			$scope.$apply();
-			//localStorage.setItem('userToken', res.token);
-			//console.log("Authed success: ", res);
-			//$location.path('/home');
-			authService.saveToken(res.token);
+		$http.post('/authenticate', user).then(function (res) {
+			//console.log("response ", res.data);
+			authService.saveToken(res.data.token);
 			$rootScope.user = authService.getUser();
-			//console.log("Post success: ", authService.parseJwt(res.token));
-			//$location.path('/home');
-		});
-
-		$ajaxCall.fail(function (res) {
+			$interval(function () {
+				console.log(authService.getUser());
+			}, 1000, 3);
+			$timeout(function () {
+				$location.path('/home');
+			}, 4000);
+		}, function (res) {
 			$scope.error = res.responseText;
-			$scope.$apply();
 			$timeout(function () {
 				$scope.error = "";
 			}, 5000);
 		});
 
-		$ajaxCall.always(function (res) {
-			console.log("AJAX complete!", authService.getUser());
-			var counter = 0;
-			$interval(function () {
-				console.log(counter++, authService.getUser());
-			}, 1000, 10);
-		});
+
+		////console.log('login clicked', user);
+		//var $ajaxCall = $.ajax({
+		//	url: '/authenticate',
+		//	method: 'POST',
+		//	data: user
+		//});
+		//
+		//$ajaxCall.done(function (res) {
+		//	$scope.$apply();
+		//	//localStorage.setItem('userToken', res.token);
+		//	//console.log("Authed success: ", res);
+		//	//$location.path('/home');
+		//	authService.saveToken(res.token);
+		//	$rootScope.user = authService.getUser();
+		//	//console.log("Post success: ", authService.parseJwt(res.token));
+		//	//$location.path('/home');
+		//});
+		//
+		//$ajaxCall.fail(function (res) {
+		//	$scope.error = res.responseText;
+		//	$scope.$apply();
+		//	$timeout(function () {
+		//		$scope.error = "";
+		//	}, 5000);
+		//});
+		//
+		//$ajaxCall.always(function (res) {
+		//	console.log("AJAX complete!", authService.getUser());
+		//	var counter = 0;
+		//	$interval(function () {
+		//		console.log(counter++, authService.getUser());
+		//	}, 1000, 10);
+		//});
 		//$http.post('/authenticate', user).then(function (data) {
 		//	console.log("done", data.data);
 		//	// save JWT token
@@ -91,7 +110,7 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authSe
 	};
 }]);
 
-app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '$rootScope', function($scope, authService, $location, $interval, $rootScope){
+app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '$rootScope', '$http', function($scope, authService, $location, $interval, $rootScope, $http){
 	if(authService.isAuthed()) {
 		console.log("authed into home", authService.getToken());
 		$scope.message = "Welcome Home!";
