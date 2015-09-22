@@ -97,6 +97,7 @@ UserSchema.statics.getAuthenticated = function (user, callback) {
 
 
 UserSchema.statics.Create = function (user, callback) {
+	var self = this;
 	// first check that passwords match before continuing
 	if(user.password != user.password_confirm) {
 		return callback(new Error('Passwords do not match.'), null);
@@ -115,42 +116,44 @@ UserSchema.statics.Create = function (user, callback) {
 		if (doc) {
 			console.log("Username exists");
 			return callback(new Error('Username Already Exists'), null);
-		}
-	});
+		}else {
 
-	// find a user in Mongo with provided email
-	this.findOne({'email': user.email}, function (err, doc) {
-		if(err) {
-			console.log("err", err);
-			return callback(err);
-		}
-		// if email exists
-		if(doc) {
-			console.log("Email exists");
-			return callback(new Error('Email Already Exists'), null);
-		}else{
-			console.log("checking failed, got to end", doc);
-			// if there is no user with that username
-			// create the user
-			var User =  mongoose.model('User', UserSchema);
-			var newUser = new User({
-				password: user.password,
-				username: user.username,
-				email: user.email,
-				firstName: user.firstName,
-				lastName: user.lastName
-			});
-
-			// save the user
-			newUser.save(function (err) {
-				// In case of any error, return using the done method
-				if (err) {
+			// find a user in Mongo with provided email
+			self.findOne({'email': user.email}, function (err, doc) {
+				if(err) {
+					console.log("err", err);
 					return callback(err);
 				}
-				// User Registration successful
-				return callback(null, newUser);
+				// if email exists
+				if(doc) {
+					console.log("Email exists");
+					return callback(new Error('Email Already Exists'), null);
+				}else{
+					console.log("checking failed, got to end", doc);
+					// if there is no user with that username
+					// create the user
+					var User =  mongoose.model('User', UserSchema);
+					var newUser = new User({
+						password: user.password,
+						username: user.username,
+						email: user.email,
+						firstName: user.firstName,
+						lastName: user.lastName
+					});
+
+					// save the user
+					newUser.save(function (err) {
+						// In case of any error, return using the done method
+						if (err) {
+							return callback(err);
+						}
+						// User Registration successful
+						return callback(null, newUser);
+					});
+				}
 			});
 		}
 	});
+
 };
 module.exports = mongoose.model('User', UserSchema);

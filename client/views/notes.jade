@@ -1,6 +1,10 @@
 .jumbotron.text-center
     h2 {{message}}
-    #error_div
+    #message
+        span.error
+            |{{ error }}
+        span.success
+            | {{ success }} {{ time }}
 
 form#Note
     input#task(placeholder="Task name" required="true")
