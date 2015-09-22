@@ -36,7 +36,7 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($ro
 	$httpProvider.interceptors.push('authInterceptor');
 }]);
 
-app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authService', '$rootScope', function($scope, $http, $location, $timeout, authService, $rootScope){
+app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authService', '$rootScope', '$interval', function($scope, $http, $location, $timeout, authService, $rootScope, $interval){
 	//$('.auth').attr('disabled', true);
 	//$('#error_div').append($('<p>').text("failure"));
 
@@ -55,13 +55,14 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authSe
 		});
 
 		$ajaxCall.done(function (res) {
+			$scope.$apply();
 			//localStorage.setItem('userToken', res.token);
-			console.log("Authed success: "+ res.token);
+			//console.log("Authed success: ", res);
 			//$location.path('/home');
 			authService.saveToken(res.token);
 			$rootScope.user = authService.getUser();
-			$scope.$apply();
-			$location.path('/home');
+			//console.log("Post success: ", authService.parseJwt(res.token));
+			//$location.path('/home');
 		});
 
 		$ajaxCall.fail(function (res) {
@@ -73,7 +74,11 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authSe
 		});
 
 		$ajaxCall.always(function (res) {
-			console.log("AJAX complete!");
+			console.log("AJAX complete!", authService.getUser());
+			var counter = 0;
+			$interval(function () {
+				console.log(counter++, authService.getUser());
+			}, 1000, 10);
 		});
 		//$http.post('/authenticate', user).then(function (data) {
 		//	console.log("done", data.data);
@@ -86,9 +91,18 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authSe
 	};
 }]);
 
-app.controller('mainCtrl', ['$scope', function($scope){
-	$('.auth').prop('disabled', false);
-	$scope.message = "Welcome Home!";
+app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '$rootScope', function($scope, authService, $location, $interval, $rootScope){
+	if(authService.isAuthed()) {
+		console.log("authed into home", authService.getToken());
+		$scope.message = "Welcome Home!";
+	}else {
+		$scope.error = "You are not authorized to view this page";
+		console.log("Auth failed unto home", authService.getUser(), authService.isAuthed());
+		$interval(function () {
+			$location.path('/');
+		}, 3000);
+	}
+	//$('.auth').prop('disabled', false);
 	//var $ajaxCall = $.ajax({
 	//	url: '/authenticate',
 	//	method: 'POST',
@@ -160,15 +174,31 @@ app.controller('registerCtrl', ['$scope', '$http', '$location', '$interval', '$t
 	//};
 }]);
 
-app.controller('logoutCtrl', ['$scope', '$location', '$timeout', '$interval', function($scope, $location, $timeout, $interval) {
-	$('.auth').prop('disabled', true);
+app.controller('navCtrl', ['authService','$scope','$rootScope','$location', function(authService, $scope,$rootScope, $location){
+	$rootScope.user = authService.getUser();
+
+	if($rootScope.user && $rootScope.user.username){
+		$location.path('/home');
+	}
+
+	//$scope.logout = function(){
+	//	authService.logout();
+	//	$rootScope.user = authService.getUser();
+	//	$location.path("/login");
+	//}
+}]);
+
+app.controller('logoutCtrl', ['$scope', '$location', '$timeout', '$interval', 'authService', '$rootScope', function($scope, $location, $timeout, $interval, authService, $rootScope) {
+	//$('.auth').prop('disabled', true);
 	$scope.message = "You have been logged out...";
 	$scope.countdown = 3;
-	localStorage.removeItem('userToken');
+	//localStorage.removeItem('userToken');
 	$interval(function () {
 		$scope.countdown--;
 	}, 1000, 3);
 	$timeout(function () {
+		authService.logout();
+		$rootScope.user = authService.getUser();
 		$location.path('/');
 	}, 3000);
 }]);

@@ -10,7 +10,7 @@ html(ng-app="taskApp")
         script(type="text/javascript" src="javascripts/app.js")
         base(href="/")
     body
-        nav(class="navbar navbar-default" ng-show="user.username")
+        nav(class="navbar navbar-default" ng-show="user.username" ng-controller="navCtrl")
             div(class="container")
                 div(class="navbar-header")
                     a(class="navbar-brand" href="/") Task Manager
