@@ -10,4 +10,17 @@ html(ng-app="taskApp")
         script(type="text/javascript" src="javascripts/app.js")
         base(href="/")
     body
+        nav(class="navbar navbar-default" ng-show="user.username")
+            div(class="container")
+                div(class="navbar-header")
+                    a(class="navbar-brand" href="/") Task Manager
+            ul(class="nav navbar-nav navbar-right")
+                li
+                    a(href="/home") Home
+                li
+                    a(href="/tasks") Tasks
+                li
+                    a(href="/notes") Notes
+                li
+                    a(href="/logout") Logout
         block content

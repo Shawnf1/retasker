@@ -1,12 +1,12 @@
 .jumbotron.text-center
     h2 {{ message }}
     h3 {{ subtitle }}
-    #message
-        span.error
-            |{{ error }}
-        span.success
-            | {{ success }} {{ time }}
-form
+#message
+    span.error
+        |{{ error }}
+    span.success
+        | {{ success }} {{ time }}
+form(ng-submit="login()")
     fieldset
         legend Enter your login credentials
         div
@@ -16,5 +16,5 @@ form
             label(for="password") Password:
             input#password(type="password" name="password" ng-model="password" required="true")
         div
-            button(ng-click="login()") Log In
+            button Log In
             a(href="/register") |Register

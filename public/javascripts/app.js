@@ -36,7 +36,7 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($ro
 	$httpProvider.interceptors.push('authInterceptor');
 }]);
 
-app.controller('loginCtrl', ['$scope', '$http', '$location', function($scope, $http, $location){
+app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authService', '$rootScope', function($scope, $http, $location, $timeout, authService, $rootScope){
 	//$('.auth').attr('disabled', true);
 	//$('#error_div').append($('<p>').text("failure"));
 
@@ -47,21 +47,53 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', function($scope, $h
 			username: $scope.username,
 			password: $scope.password
 		};
-		console.log('login clicked', user);
-		$http.post('/authenticate', user).then(function (data) {
-			console.log("done", data.data);
-			// save JWT token
-			localStorage.setItem('userToken', data.data.token);
+		//console.log('login clicked', user);
+		var $ajaxCall = $.ajax({
+			url: '/authenticate',
+			method: 'POST',
+			data: user
+		});
 
-			// redirect page to home
+		$ajaxCall.done(function (res) {
+			//localStorage.setItem('userToken', res.token);
+			console.log("Authed success: "+ res.token);
+			//$location.path('/home');
+			authService.saveToken(res.token);
+			$rootScope.user = authService.getUser();
+			$scope.$apply();
 			$location.path('/home');
 		});
+
+		$ajaxCall.fail(function (res) {
+			$scope.error = res.responseText;
+			$scope.$apply();
+			$timeout(function () {
+				$scope.error = "";
+			}, 5000);
+		});
+
+		$ajaxCall.always(function (res) {
+			console.log("AJAX complete!");
+		});
+		//$http.post('/authenticate', user).then(function (data) {
+		//	console.log("done", data.data);
+		//	// save JWT token
+		//	localStorage.setItem('userToken', data.data.token);
+		//
+		//	// redirect page to home
+		//	$location.path('/home');
+		//});
 	};
 }]);
 
 app.controller('mainCtrl', ['$scope', function($scope){
 	$('.auth').prop('disabled', false);
 	$scope.message = "Welcome Home!";
+	//var $ajaxCall = $.ajax({
+	//	url: '/authenticate',
+	//	method: 'POST',
+	//	data:
+	//})
 }]);
 
 app.controller('taskCtrl', ['$scope', function($scope){
@@ -139,20 +171,6 @@ app.controller('logoutCtrl', ['$scope', '$location', '$timeout', '$interval', fu
 	$timeout(function () {
 		$location.path('/');
 	}, 3000);
-}]);
-
-app.controller('naCtrl', ['authService', '$scope', '$rootScope', '$location', function(authService, $scope, $rootScope, $location) {
-	$rootScope.use = authService.getUser();
-
-	if($rootScope.user && $rootScope.user.username){
-		$location.path('/home');
-	}
-
-	$scope.logout = function(){
-		authService.logout();
-		$rootScope.user = authService.getUser();
-		$location.path("/login");
-	}
 }]);
 
 app.service('authService', ['$window', function ($window) {
