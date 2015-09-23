@@ -5,7 +5,6 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var expressJwt = require('express-jwt');
 
 var index = require('./routes/index');
 var authenticate = require('./routes/authenticate');
@@ -29,6 +28,15 @@ app.use('/', index);
 app.use('/authenticate', authenticate);
 //app.use('/users', users);
 app.use('/register', register);
+
+var expressJwt = require('express-jwt');
+app.use('/private/*', expressJwt({secret: 'supersecret'}));
+
+app.use(function (err, req, res, next) {
+	if (err.name === 'UnauthorizedError') {
+		res.send(401, 'invalid token...');
+	}
+});
 
 var mongoURI = "mongodb://localhost:27017/retasker";
 var MongoDB = mongoose.connect(mongoURI).connection;

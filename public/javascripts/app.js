@@ -11,15 +11,15 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($ro
 			controller: 'loginCtrl'
 		}).when('/home',
 		{
-			templateUrl: '/views/home.html',
+			templateUrl: 'private/views/home.html',
 			controller: 'mainCtrl'
 		}).when('/tasks',
 		{
-			templateUrl: '/views/tasks.html',
+			templateUrl: 'private/views/tasks.html',
 			controller: 'taskCtrl'
 		}).when('/notes',
 		{
-			templateUrl: '/views/notes.html',
+			templateUrl: 'private/views/notes.html',
 			controller: 'noteCtrl'
 		}).when('/register',
 		{
