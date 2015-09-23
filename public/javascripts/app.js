@@ -62,14 +62,14 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authSe
 app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '$rootScope', '$http', function($scope, authService, $location, $interval, $rootScope, $http){
 	$rootScope.user = authService.getUser();
 
-	if(authService.isAuthed()) {\
+	if(authService.isAuthed()) {
 		$scope.message = "Welcome Home!";
 	}else {
-		$scope.error = "You are not authorized to view this page";\
+		$scope.error = "You are not authorized to view this page";
 		$interval(function () {
 			$location.path('/');
 		}, 3000);
-	}\
+	}
 }]);
 
 app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', function($scope, $rootScope, authService){
