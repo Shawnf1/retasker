@@ -13,11 +13,11 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($ro
 		{
 			templateUrl: '/views/home.html',
 			controller: 'mainCtrl'
-		}).when('/task',
+		}).when('/tasks',
 		{
 			templateUrl: '/views/tasks.html',
 			controller: 'taskCtrl'
-		}).when('/note',
+		}).when('/notes',
 		{
 			templateUrl: '/views/notes.html',
 			controller: 'noteCtrl'
@@ -36,7 +36,7 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($ro
 	$httpProvider.interceptors.push('authInterceptor');
 }]);
 
-app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authService', '$rootScope', '$interval', 'userService', function($scope, $http, $location, $timeout, authService, $rootScope, $interval, userService){
+app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authService', '$rootScope', '$interval', function($scope, $http, $location, $timeout, authService, $rootScope, $interval){
 	//$('.auth').attr('disabled', true);
 	//$('#error_div').append($('<p>').text("failure"));
 
@@ -52,13 +52,13 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authSe
 			//console.log("response ", res.data);
 			authService.saveToken(res.data.token);
 			$rootScope.user = authService.getUser();
-			userService.setUser(authService.getUser());
-			$interval(function () {
-				console.log(authService.getUser());
-			}, 1000, 1);
-			$timeout(function () {
+			//userService.setUser(authService.getUser());
+			//$interval(function () {
+				//console.log(authService.getUser());
+			//}, 1000, 1);
+			//$timeout(function () {
 				$location.path('/home');
-			}, 2000);
+			//}, 2000);
 		}, function (res) {
 			$scope.error = res.responseText;
 			$timeout(function () {
@@ -111,11 +111,11 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authSe
 	};
 }]);
 
-app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '$rootScope', '$http', 'userService', '$window', function($scope, authService, $location, $interval, $rootScope, $http, userService, $window){
+app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '$rootScope', '$http', function($scope, authService, $location, $interval, $rootScope, $http){
 	$rootScope.user = authService.getUser();
-
-
-	console.log("user service ", userService.getUser());
+	//
+	//
+	//console.log("user service ", userService.getUser());
 	//console.log("window ", $window.localStorage.jwtToken);
 	//console.log("root ", $rootScope);
 	//console.log("scope ", $scope);
@@ -129,11 +129,11 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 	//	$location.path("/login");
 	//}
 	if(authService.isAuthed()) {
-		console.log("authed into home", authService.getToken());
+		//console.log("authed into home", authService.getToken());
 		$scope.message = "Welcome Home!";
 	}else {
 		$scope.error = "You are not authorized to view this page";
-		console.log("Auth failed unto home", authService.getUser(), authService.isAuthed());
+		//console.log("Auth failed unto home", authService.getUser(), authService.isAuthed());
 		$interval(function () {
 			$location.path('/');
 		}, 3000);
@@ -146,14 +146,30 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 	//})
 }]);
 
-app.controller('taskCtrl', ['$scope', function($scope){
-	$('.auth').prop('disabled', false);
-	$scope.message = "Here are your tasks!";
+app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', function($scope, $rootScope, authService){
+	$rootScope.user = authService.getUser();
+	if(authService.isAuthed()) {
+		//console.log("authed into home", authService.getToken());
+		$scope.message = "Here are your tasks!";
+	}else {
+		$scope.error = "You are not authorized to view this page";
+		$interval(function () {
+			$location.path('/');
+		}, 3000);
+	}
 }]);
 
-app.controller('noteCtrl', ['$scope', function($scope){
-	$('.auth').prop('disabled', false);
-	$scope.message = "Here are your notes!";
+app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', function($scope, $rootScope, authService){
+	$rootScope.user = authService.getUser();
+	if(authService.isAuthed()) {
+		//console.log("authed into home", authService.getToken());
+		$scope.message = "Here are your notes!";
+	}else {
+		$scope.error = "You are not authorized to view this page";
+		$interval(function () {
+			$location.path('/');
+		}, 3000);
+	}
 }]);
 
 app.controller('registerCtrl', ['$scope', '$http', '$location', '$interval', '$timeout', function($scope, $http, $location, $interval, $timeout){
@@ -226,7 +242,7 @@ app.controller('navCtrl', ['authService','$scope','$rootScope','$location', func
 
 app.controller('logoutCtrl', ['$scope', '$location', '$timeout', '$interval', 'authService', '$rootScope', function($scope, $location, $timeout, $interval, authService, $rootScope) {
 	//$('.auth').prop('disabled', true);
-	$scope.message = "You have been logged out...";
+	$scope.message = "Logging you out...";
 	$scope.countdown = 3;
 	//localStorage.removeItem('userToken');
 	$interval(function () {
@@ -239,17 +255,17 @@ app.controller('logoutCtrl', ['$scope', '$location', '$timeout', '$interval', 'a
 	}, 2000);
 }]);
 
-app.service('userService', [function () {
-	var user;
-
-	this.setUser = function (usr) {
-		user = usr;
-	};
-
-	this.getUser = function () {
-		return user;
-	};
-}]);
+//app.service('userService', [function () {
+//	var user;
+//
+//	this.setUser = function (usr) {
+//		user = usr;
+//	};
+//
+//	this.getUser = function () {
+//		return user;
+//	};
+//}]);
 
 app.service('authService', ['$window', function ($window) {
 
@@ -265,7 +281,7 @@ app.service('authService', ['$window', function ($window) {
 
 	this.saveToken = function (token) {
 		$window.localStorage.jwtToken = token;
-		console.log('Saved token:',$window.localStorage.jwtToken);
+		//console.log('Saved token:',$window.localStorage.jwtToken);
 	};
 
 	this.getToken = function () {
@@ -276,7 +292,7 @@ app.service('authService', ['$window', function ($window) {
 	this.isAuthed = function () {
 		var token = self.getToken();
 		//var token = (this.getToken() !== "undefined") ? this.getToken() : false;
-		console.log("authed begin", token);
+		//console.log("authed begin", token);
 		if (token) {
 			var params = self.parseJwt(token);
 			var notExpired = Math.round(new Date().getTime() / 1000) <= params.exp;
