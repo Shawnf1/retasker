@@ -14,3 +14,8 @@ a {
 .success {
     color: green;
 }
+
+.form-group {
+    margin: 10px;
+}
+

@@ -38,15 +38,17 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($ro
 
 app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authService', '$rootScope', '$interval', function($scope, $http, $location, $timeout, authService, $rootScope, $interval){
 
-	$scope.message = "Welcome to Task Manager!";
-	$scope.subtitle = "Please login to continue...";
 	$rootScope.user = authService.getUser();
 
 	if(authService.isAuthed()) {
 		$scope.message = "Welcome back, "+ $rootScope.user.first_name;
+		$scope.subtitle = "Logging you in...";
 		$timeout(function () {
 			$location.path('/home');
 		}, 1500);
+	}else {
+		$scope.message = "Welcome to Task Manager!";
+		$scope.subtitle = "Please login to continue...";
 	}
 
 	$scope.login = function () {

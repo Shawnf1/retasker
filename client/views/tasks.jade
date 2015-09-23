@@ -3,7 +3,41 @@
     #message
     | {{ error }} {{ success }} {{ time }}
 
-form#Task
-    input#task(placeholder="Task name" required="true")
-    textarea#desc(placeholder="Description")
-    button#save Save
+.container-fluid
+    form#Task.form-inline
+        .row
+            .form-group.col-xs-12.col-md-2
+                label.sr-only(for="title") Task Name:
+                input#title(placeholder="Task Name" required="true")
+            .form-group.col-xs-12.col-md-2
+                label.sr-only(for="desc") Description:
+                textarea#desc(placeholder="Description")
+            .form-group.col-xs-12.col-md-2
+                label Frequency:
+                    select
+                        option Daily
+                        option Weekly
+                        option Monthly
+                        option Quarterly
+                        option Semi-Annually
+                        option Annually
+        .row
+            .form-group.col-xs-12.col-md-2
+                label Start Date:
+                    input(type="date" placeholder="Start Date")
+            .form-group.col-xs-12.col-md-2
+                label Repetitions:
+                    input(placeholder="Repetitions")
+            .form-group.col-xs-12.col-md-2
+                label
+                    input(type="checkbox")
+                    | &nbsp Read-only
+            .form-group.col-xs-6.col-md-2
+                button#save Save
+
+//.container-fluid
+//    .row
+//        | {{ header }}
+//    .row(ng-repeat="task in tasks")
+//        span.title {{ task.title }}
+//

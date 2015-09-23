@@ -1,8 +1,7 @@
-/**
- * Created by Shawn on 9/9/15.
- */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var TagSchema = require('./tag');
+var TaskSchema = require('./task');
 
 var NoteSchema = new Schema({
 	title: {type: String, required: true},
@@ -11,7 +10,9 @@ var NoteSchema = new Schema({
 	user_id: {type: String, required: true},
 	created_on: Date,
 	updated_on: Date,
-	read_only: {type: Boolean, default: false}
+	read_only: {type: Boolean, default: false},
+	tags: [TagSchema],
+	task_link: TaskSchema
 });
 
 NoteSchema.pre('save', function(next) {
