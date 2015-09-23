@@ -8,7 +8,7 @@ router.get('/:id?', function(req, res, next){
 	// check if a token was sent
 	if(token) {
 		// validate the token
-		jsonwebtoken.verify(token, 'Über_spaß_token', function (err, decoded) {
+		jsonwebtoken.verify(token, 'kindaSecret', function (err, decoded) {
 			if(err) {// reject the request
 				res.status(403).send({
 					success: false,
@@ -55,7 +55,8 @@ router.post('/', function(req, res, next) {
 
 	if(token) {
 		console.log("token exists", token);
-		jsonwebtoken.verify(token, 'Über_spaß_token', function (err, decoded) {
+		jsonwebtoken.verify(token, 'kindaSecret', function (err, decoded) {
+			res.status(403);
 			console.log("in verify");
 			if(err) {// reject the request
 				console.log("error :'(");

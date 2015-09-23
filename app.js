@@ -36,6 +36,9 @@ app.use('/notes', notes);
 
 //app.use('/private/*', expressJwt({secret: 'Über_spaß_token'}));
 
+// Sets up protection for all /api routes, using json web tokens
+//app.use('/api/*', expressJwt({secret: 'kindaSecret'}));
+
 app.use(function (err, req, res, next) {
 	if (err.name === 'UnauthorizedError') {
 		res.send(401, 'invalid token...');

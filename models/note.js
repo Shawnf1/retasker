@@ -4,8 +4,7 @@ var Tag = require('./tag.js');
 var Task = require('./task.js');
 
 var NoteSchema = new Schema({
-	title: {type: String, required: true},
-	desc: String,
+	title: String,
 	note: {type: String, required: true},
 	user_id: {type: String, required: true},
 	created_on: Date,

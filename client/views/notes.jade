@@ -6,7 +6,19 @@
         span.success
             | {{ success }} {{ time }}
 
-form#Note
-    input#task(placeholder="Task name" required="true")
-    textarea#desc(placeholder="Description")
-    button#save Save
+.container-fluid
+    form.form-inline(ng-submit="addTask()")
+        .row
+            .form-group.col-xs-12.col-md-2
+                label.sr-only(for="title") Note Name:
+                input(placeholder="Note Name" ng-model="title")
+            .form-group.col-xs-12.col-md-2
+                label.sr-only(for="note") Note:
+                textarea(placeholder="Note" ng-model="note")
+        .row
+            .form-group.col-xs-12.col-md-2
+                label
+                    input(type="checkbox" ng-model="read_only")
+                    | &nbsp Read-only
+            .form-group.col-xs-6.col-md-2
+                button Save

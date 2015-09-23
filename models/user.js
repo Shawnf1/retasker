@@ -94,7 +94,7 @@ UserSchema.statics.getAuthenticated = function (user, callback) {
 					};
 
 					// return the jwt
-					var token = jsonwebtoken.sign(user, 'Über_spaß_token', {
+					var token = jsonwebtoken.sign(user, 'kindaSecret', {
 						expiresInMinutes: 1440 // expires in 24 hours
 					});
 					return callback(null, token, user);

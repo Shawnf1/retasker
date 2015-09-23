@@ -76,6 +76,7 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 	if(authService.isAuthed()) {
 		$scope.message = "Welcome Home!";
 	}else {
+		$rootScope.user = { };
 		$scope.error = "You are not authorized to view this page";
 		$interval(function () {
 			$location.path('/');
@@ -88,6 +89,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	if(authService.isAuthed()) {
 		$scope.message = "Here are your tasks!";
 	}else {
+		$rootScope.user = { };
 		$scope.error = "You are not authorized to view this page";
 		$interval(function () {
 			$location.path('/');
@@ -124,6 +126,7 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', function($sco
 	if(authService.isAuthed()) {
 		$scope.message = "Here are your notes!";
 	}else {
+		$rootScope.user = { };
 		$scope.error = "You are not authorized to view this page";
 		$interval(function () {
 			$location.path('/');
