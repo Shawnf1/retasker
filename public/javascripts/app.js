@@ -5,7 +5,7 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($ro
 	//localStorage.reset();
 
 	$locationProvider.html5Mode(true);
-	$routeProvider.when('/',
+	$routeProvider.when('/login',
 		{
 			templateUrl: '/views/login.html',
 			controller: 'loginCtrl'
@@ -30,13 +30,13 @@ app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($ro
 			templateUrl: '/views/logout.html',
 			controller: 'logoutCtrl'
 		}).otherwise({
-			redirectTo: '/'
+			redirectTo: '/login'
 		});
 
 	$httpProvider.interceptors.push('authInterceptor');
 }]);
 
-app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authService', '$rootScope', '$interval', function($scope, $http, $location, $timeout, authService, $rootScope, $interval){
+app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authService', '$rootScope', '$interval', 'userService', function($scope, $http, $location, $timeout, authService, $rootScope, $interval, userService){
 	//$('.auth').attr('disabled', true);
 	//$('#error_div').append($('<p>').text("failure"));
 
@@ -52,6 +52,7 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authSe
 			//console.log("response ", res.data);
 			authService.saveToken(res.data.token);
 			$rootScope.user = authService.getUser();
+			userService.setUser(authService.getUser());
 			$interval(function () {
 				console.log(authService.getUser());
 			}, 1000, 3);
@@ -110,7 +111,23 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authSe
 	};
 }]);
 
-app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '$rootScope', '$http', function($scope, authService, $location, $interval, $rootScope, $http){
+app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '$rootScope', '$http', 'userService', '$window', function($scope, authService, $location, $interval, $rootScope, $http, userService, $window){
+	$rootScope.user = authService.getUser();
+
+
+	console.log("user service ", userService.getUser());
+	console.log("window ", $window.localStorage.jwtToken);
+	//console.log("root ", $rootScope);
+	//console.log("scope ", $scope);
+	//if($rootScope.user && $rootScope.user.username){
+	//	$location.path('/admin');
+	//}
+	//
+	//$scope.logout = function(){
+	//	authService.logout();
+	//	$rootScope.user = authService.getUser();
+	//	$location.path("/login");
+	//}
 	if(authService.isAuthed()) {
 		console.log("authed into home", authService.getToken());
 		$scope.message = "Welcome Home!";
@@ -196,9 +213,9 @@ app.controller('registerCtrl', ['$scope', '$http', '$location', '$interval', '$t
 app.controller('navCtrl', ['authService','$scope','$rootScope','$location', function(authService, $scope,$rootScope, $location){
 	//$rootScope.user = authService.getUser();
 
-	if($rootScope.user && $rootScope.user.username){
-		$location.path('/home');
-	}
+	//if($rootScope.user && $rootScope.user.username){
+	//	$location.path('/home');
+	//}
 
 	//$scope.logout = function(){
 	//	authService.logout();
@@ -222,6 +239,18 @@ app.controller('logoutCtrl', ['$scope', '$location', '$timeout', '$interval', 'a
 	}, 3000);
 }]);
 
+app.service('userService', [function () {
+	this.user;
+
+	this.setUser = function (user) {
+		this.user = user;
+	};
+
+	this.getUser = function () {
+		return this.user;
+	};
+}]);
+
 app.service('authService', ['$window', function ($window) {
 
 	this.parseJwt = function (token) {
@@ -238,6 +267,7 @@ app.service('authService', ['$window', function ($window) {
 	};
 
 	this.getToken = function () {
+		console.log($window.localStorage);
 		return $window.localStorage.jwtToken;
 	};
 
