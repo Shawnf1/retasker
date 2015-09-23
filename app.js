@@ -10,6 +10,8 @@ var expressJwt = require('express-jwt');
 var index = require('./routes/index');
 var authenticate = require('./routes/authenticate');
 var register = require('./routes/register');
+var tasks = require('./routes/tasks');
+var notes = require('./routes/notes');
 
 var app = express();
 
@@ -29,6 +31,16 @@ app.use('/', index);
 app.use('/authenticate', authenticate);
 //app.use('/users', users);
 app.use('/register', register);
+app.use('/tasks', tasks);
+app.use('/notes', notes);
+
+//app.use('/private/*', expressJwt({secret: 'Über_spaß_token'}));
+
+app.use(function (err, req, res, next) {
+	if (err.name === 'UnauthorizedError') {
+		res.send(401, 'invalid token...');
+	}
+});
 
 var mongoURI = "mongodb://localhost:27017/retasker";
 var MongoDB = mongoose.connect(mongoURI).connection;

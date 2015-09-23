@@ -1,11 +1,12 @@
-/**
- * Created by Shawn on 9/4/15.
- */
-var mongoose = require('mongoose'),
-	Schema = mongoose.Schema,
-	bcrypt = require('bcrypt'),
-	jsonwebtoken = require('jsonwebtoken'),
-	SALT_WORK_FACTOR = 10;
+
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+var bcrypt = require('bcrypt');
+var jsonwebtoken = require('jsonwebtoken');
+var SALT_WORK_FACTOR = 10;
+var TaskSchema = require('./task.js');
+var NoteSchema = require('./note.js');
+var TagSchema = require('./tag.js');
 
 var UserSchema = new Schema({
 	username: {type: String, required: true, index: {unique: true}},
@@ -15,7 +16,10 @@ var UserSchema = new Schema({
 	last_name: String,
 	created_on: Date,
 	last_access: Date,
-	locked_out: {type: Boolean, default: false}
+	locked_out: {type: Boolean, default: false},
+	tasks: [TaskSchema],
+	notes: [NoteSchema],
+	tags: [TagSchema]
 });
 
 UserSchema.pre('save', function (next) {

@@ -4,17 +4,17 @@
     | {{ error }} {{ success }} {{ time }}
 
 .container-fluid
-    form#Task.form-inline
+    form.form-inline(ng-submit="addTask()")
         .row
             .form-group.col-xs-12.col-md-2
                 label.sr-only(for="title") Task Name:
-                input#title(placeholder="Task Name" required="true")
+                input(placeholder="Task Name" required="true" ng-model="title")
             .form-group.col-xs-12.col-md-2
                 label.sr-only(for="desc") Description:
-                textarea#desc(placeholder="Description")
+                textarea(placeholder="Description" ng-model="desc")
             .form-group.col-xs-12.col-md-2
                 label Frequency:
-                    select
+                    select(ng-model="freq")
                         option Daily
                         option Weekly
                         option Monthly
@@ -24,16 +24,16 @@
         .row
             .form-group.col-xs-12.col-md-2
                 label Start Date:
-                    input(type="date" placeholder="Start Date")
+                    input(type="date" placeholder="Start Date" ng-model="start")
             .form-group.col-xs-12.col-md-2
                 label Repetitions:
-                    input(placeholder="Repetitions")
+                    input(placeholder="Repetitions" type="number" ng-model="reps")
             .form-group.col-xs-12.col-md-2
                 label
-                    input(type="checkbox")
+                    input(type="checkbox" ng-model="read_only")
                     | &nbsp Read-only
             .form-group.col-xs-6.col-md-2
-                button#save Save
+                button Save
 
 //.container-fluid
 //    .row

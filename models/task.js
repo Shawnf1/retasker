@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var TagSchema = require('./tag');
+var TagSchema = require('./tag.js');
 
 var TaskSchema = new Schema({
 	title: {type: String, required: true},
@@ -9,7 +9,8 @@ var TaskSchema = new Schema({
 	created_on: Date,
 	updated_on: Date,
 	start_date: {type: Date, required: true},
-	repetitions: Mixed,
+	repetitions: Number,
+	end_date: Date,
 	read_only: {type: Boolean, default: false},
 	tags: [TagSchema]
 });

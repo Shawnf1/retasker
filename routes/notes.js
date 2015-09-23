@@ -1,14 +1,14 @@
 var express = require('express');
 var router = express.Router();
 var Tasks = require('../models/task.js');
-var jsonwebtoken = require('express-jwt');
+var jwt = require('express-jwt');
 
 router.get('/:id?', function(req, res, next){
 	var token = req.body.token;
 	// check if a token was sent
 	if(token) {
 		// validate the token
-		jsonwebtoken.verify(token, 'Über_spaß_token', function (err, decoded) {
+		jwt.verify(token, 'Über_spaß_token', function (err, decoded) {
 			if(err) {// reject the request
 				res.status(403).send({
 					success: false,
@@ -51,20 +51,14 @@ router.get('/:id?', function(req, res, next){
 
 router.post('/', function(req, res, next) {
 	var token = req.body.token;
-	console.log("req: ", req.body);
-
 	if(token) {
-		console.log("token exists", token);
-		jsonwebtoken.verify(token, 'Über_spaß_token', function (err, decoded) {
-			console.log("in verify");
+		jwt.verify(token, 'Über_spaß_token', function (err, decoded) {
 			if(err) {// reject the request
-				console.log("error :'(");
 				res.status(403).send({
 					success: false,
 					message: 'Invalid token'
 				});
 			}else {// save the decoded token, continue
-				console.log("token verified");
 				req.decoded = decoded;
 			}
 		});

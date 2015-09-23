@@ -83,7 +83,7 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 	}
 }]);
 
-app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', function($scope, $rootScope, authService){
+app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$timeout', function($scope, $rootScope, authService, $http, $timeout){
 	$rootScope.user = authService.getUser();
 	if(authService.isAuthed()) {
 		$scope.message = "Here are your tasks!";
@@ -93,6 +93,30 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', function($sco
 			$location.path('/');
 		}, 3000);
 	}
+
+	$scope.addTask = function () {
+		var task = {
+			token: authService.getToken(),
+			title: $scope.title,
+			desc: $scope.desc,
+			frequency: $scope.freq,
+			start_date: $scope.start,
+			repetitions: $scope.reps,
+			read_only: $scope.read_only
+		};
+		$http.post('/tasks', task).then(function (res) {
+			$scope.success = res.responseText;
+			$timeout(function () {
+				$scope.success = "";
+			}, 3000);
+		}, function (res) {
+			$scope.error = res.responseText;
+			$timeout(function () {
+				$scope.error = "";
+			}, 5000);
+		});
+	};
+
 }]);
 
 app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', function($scope, $rootScope, authService){
