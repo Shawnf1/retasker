@@ -79,12 +79,19 @@ UserSchema.statics.getAuthenticated = function (user, callback) {
 
 				// check if the password was a match
 				if (isMatch) {
+					var user = {
+						username: doc.username,
+						id: doc._id,
+						created_on: doc.created_on,
+						email: doc.email,
+						locked_out: doc.locked_out
+					};
 
 					// return the jwt
-					var token = jsonwebtoken.sign(doc, 'Über_spaß_token', {
+					var token = jsonwebtoken.sign(user, 'Über_spaß_token', {
 						expiresInMinutes: 1440 // expires in 24 hours
 					});
-					return callback(null, token, doc);
+					return callback(null, token, user);
 				}
 				else {
 					return callback(new Error('Invalid username or password.'), null);

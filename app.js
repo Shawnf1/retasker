@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
-var localStrategy = require('passport-local').Strategy;
+//var localStrategy = require('passport-local').Strategy;
 var expressJwt = require('express-jwt');
 
 var index = require('./routes/index');
@@ -34,21 +34,21 @@ app.use('/authenticate', authenticate);
 //app.use('/users', users);
 app.use('/register', register);
 
-app.use(session({
-	secret: 'secret',
-	key: 'user',
-	resave: true,
-	s: false,
-	cookie: {maxAge: 60000, secure: false}
-}));
-app.use(passport.initialize());
-app.use(passport.session());
+//app.use(session({
+//	secret: 'secret',
+//	key: 'user',
+//	resave: true,
+//	s: false,
+//	cookie: {maxAge: 60000, secure: false}
+//}));
+//app.use(passport.initialize());
+//app.use(passport.session());
 
-passport.use('local', new localStrategy({
-		passReqToCallback : true,
-		usernameField: 'username'},
-	function (req, username, password, done) { }
-));
+//passport.use('local', new localStrategy({
+//		passReqToCallback : true,
+//		usernameField: 'username'},
+//	function (req, username, password, done) { }
+//));
 
 
 var mongoURI = "mongodb://localhost:27017/retasker";

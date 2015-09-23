@@ -55,10 +55,10 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authSe
 			userService.setUser(authService.getUser());
 			$interval(function () {
 				console.log(authService.getUser());
-			}, 1000, 3);
+			}, 1000, 1);
 			$timeout(function () {
 				$location.path('/home');
-			}, 4000);
+			}, 2000);
 		}, function (res) {
 			$scope.error = res.responseText;
 			$timeout(function () {
@@ -116,7 +116,7 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 
 
 	console.log("user service ", userService.getUser());
-	console.log("window ", $window.localStorage.jwtToken);
+	//console.log("window ", $window.localStorage.jwtToken);
 	//console.log("root ", $rootScope);
 	//console.log("scope ", $scope);
 	//if($rootScope.user && $rootScope.user.username){
@@ -180,10 +180,10 @@ app.controller('registerCtrl', ['$scope', '$http', '$location', '$interval', '$t
 			$scope.$apply();
 			$interval(function () {
 				$scope.time--;
-			}, 1000, 3);
+			}, 1000, 1);
 			$timeout(function () {
 				$location.path('/');
-			}, 3000);
+			}, 2000);
 		});
 
 		//$scope.error = "Test error";
@@ -231,27 +231,29 @@ app.controller('logoutCtrl', ['$scope', '$location', '$timeout', '$interval', 'a
 	//localStorage.removeItem('userToken');
 	$interval(function () {
 		$scope.countdown--;
-	}, 1000, 3);
+	}, 1000, 1);
 	$timeout(function () {
 		authService.logout();
 		$rootScope.user = authService.getUser();
 		$location.path('/');
-	}, 3000);
+	}, 2000);
 }]);
 
 app.service('userService', [function () {
-	this.user;
+	var user;
 
-	this.setUser = function (user) {
-		this.user = user;
+	this.setUser = function (usr) {
+		user = usr;
 	};
 
 	this.getUser = function () {
-		return this.user;
+		return user;
 	};
 }]);
 
 app.service('authService', ['$window', function ($window) {
+
+	var self = this;
 
 	this.parseJwt = function (token) {
 		if (token) {
@@ -267,19 +269,19 @@ app.service('authService', ['$window', function ($window) {
 	};
 
 	this.getToken = function () {
-		console.log($window.localStorage);
+		//console.log($window.localStorage);
 		return $window.localStorage.jwtToken;
 	};
 
 	this.isAuthed = function () {
-		//var token = this.getToken();
-		var token = (this.getToken() !== "undefined") ? this.getToken() : false;
-		//console.log("authed begin", token);
+		var token = self.getToken();
+		//var token = (this.getToken() !== "undefined") ? this.getToken() : false;
+		console.log("authed begin", token);
 		if (token) {
-			var params = this.parseJwt(token);
+			var params = self.parseJwt(token);
 			var notExpired = Math.round(new Date().getTime() / 1000) <= params.exp;
 			if (!notExpired) {
-				this.logout();
+				self.logout();
 			}
 			return notExpired;
 		} else {
@@ -293,7 +295,7 @@ app.service('authService', ['$window', function ($window) {
 
 	// expose user as an object
 	this.getUser = function () {
-		return this.parseJwt(this.getToken())
+		return self.parseJwt(self.getToken())
 	};
 }]);
 
