@@ -40,6 +40,15 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authSe
 
 	$scope.message = "Welcome to Task Manager!";
 	$scope.subtitle = "Please login to continue...";
+	$rootScope.user = authService.getUser();
+
+	if(authService.isAuthed()) {
+		$scope.message = "Welcome back, "+ $rootScope.user.first_name;
+		$timeout(function () {
+			$location.path('/home');
+		}, 1500);
+	}
+
 	$scope.login = function () {
 		var user = {
 			username: $scope.username,

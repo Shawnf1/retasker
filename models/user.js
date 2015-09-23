@@ -84,7 +84,9 @@ UserSchema.statics.getAuthenticated = function (user, callback) {
 						id: doc._id,
 						created_on: doc.created_on,
 						email: doc.email,
-						locked_out: doc.locked_out
+						locked_out: doc.locked_out,
+						first_name: doc.first_name,
+						last_name: doc.last_name
 					};
 
 					// return the jwt
@@ -144,8 +146,8 @@ UserSchema.statics.Create = function (user, callback) {
 						password: user.password,
 						username: user.username,
 						email: user.email,
-						firstName: user.firstName,
-						lastName: user.lastName
+						first_name: user.first_name,
+						last_name: user.last_name
 					});
 
 					// save the user
