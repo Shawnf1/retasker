@@ -8,7 +8,7 @@ router.get('/:id?', function(req, res, next){
 	// check if a token was sent
 	if(token) {
 		// validate the token
-		jwt.verify(token, 'Über_spaß_token', function (err, decoded) {
+		jwt.verify(token, 'kindaSecret', function (err, decoded) {
 			if(err) {// reject the request
 				res.status(403).send({
 					success: false,
@@ -52,7 +52,7 @@ router.get('/:id?', function(req, res, next){
 router.post('/', function(req, res, next) {
 	var token = req.body.token;
 	if(token) {
-		jwt.verify(token, 'Über_spaß_token', function (err, decoded) {
+		jwt.verify(token, 'kindaSecret', function (err, decoded) {
 			if(err) {// reject the request
 				res.status(403).send({
 					success: false,

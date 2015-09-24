@@ -4,6 +4,7 @@ var Tasks = require('../models/task.js');
 var jsonwebtoken = require('express-jwt');
 
 router.get('/:id?', function(req, res, next){
+	console.log("GET token: ", req.body.token);
 	var token = req.body.token;
 	// check if a token was sent
 	if(token) {
@@ -41,6 +42,14 @@ router.get('/:id?', function(req, res, next){
 		//		res.render('../views/notes', {title: "Notes", notes: notes});
 		//	}
 		//});
+		console.log("In token");
+		Tasks.Create(req.body, function (err, task) {
+			if(err) {
+				res.status(400).send(err.message);
+			}else {
+				res.status(200).send('Successfully inserted task.');
+			}
+		});
 	}else {
 		res.status(403).send({
 			success: false,

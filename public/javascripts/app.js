@@ -88,6 +88,8 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	$rootScope.user = authService.getUser();
 	if(authService.isAuthed()) {
 		$scope.message = "Here are your tasks!";
+		$scope.onload();
+
 	}else {
 		$rootScope.user = { };
 		$scope.error = "You are not authorized to view this page";
@@ -95,6 +97,15 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			$location.path('/');
 		}, 3000);
 	}
+
+	$scope.onload = function () {
+		var token = authService.getToken();
+		console.log("onload token: ", token);
+		$http.get('/tasks', token).then(function (res) {
+			$scope.header = res.responseText;
+			$scope.tasks = res;
+		});
+	};
 
 	$scope.addTask = function () {
 		var task = {
@@ -118,7 +129,6 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			}, 5000);
 		});
 	};
-
 }]);
 
 app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', function($scope, $rootScope, authService){
