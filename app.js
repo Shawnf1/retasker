@@ -27,6 +27,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/notes', expressJwt({secret: 'kindaSecret'}));
+app.use('/tasks', expressJwt({secret: 'kindaSecret'}));
+
 app.use('/', index);
 app.use('/authenticate', authenticate);
 //app.use('/users', users);
@@ -39,6 +42,7 @@ app.use('/notes', notes);
 // Sets up protection for all /api routes, using json web tokens
 //app.use('/api/*', expressJwt({secret: 'kindaSecret'}));
 
+//app.use('/', expressJwt({secret: 'kindaSecret'}));
 app.use(function (err, req, res, next) {
 	if (err.name === 'UnauthorizedError') {
 		res.send(401, 'invalid token...');
