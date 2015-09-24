@@ -86,9 +86,19 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 
 app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$timeout', function($scope, $rootScope, authService, $http, $timeout){
 	$rootScope.user = authService.getUser();
+	var token = authService.getToken();
+	var task = {
+		token: token
+	};
+	console.log("onload data: ", task);
+	$scope.show = function () {
+		$http.get('/tasks', {token: token}).then(function (res) {
+			console.log(res);
+		});
+	};
 	if(authService.isAuthed()) {
 		$scope.message = "Here are your tasks!";
-		$scope.onload();
+		$scope.show();
 
 	}else {
 		$rootScope.user = { };
@@ -98,18 +108,10 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 		}, 3000);
 	}
 
-	$scope.onload = function () {
-		var token = authService.getToken();
-		console.log("onload token: ", token);
-		$http.get('/tasks', token).then(function (res) {
-			$scope.header = res.responseText;
-			$scope.tasks = res;
-		});
-	};
 
 	$scope.addTask = function () {
 		var task = {
-			token: authService.getToken(),
+			//token: authService.getToken(),
 			title: $scope.title,
 			desc: $scope.desc,
 			frequency: $scope.freq,
@@ -123,10 +125,11 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				$scope.success = "";
 			}, 3000);
 		}, function (res) {
+			console.log(res.responseText);
 			$scope.error = res.responseText;
-			$timeout(function () {
-				$scope.error = "";
-			}, 5000);
+			//$timeout(function () {
+			//	$scope.error = "";
+			//}, 5000);
 		});
 	};
 }]);

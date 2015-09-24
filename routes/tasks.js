@@ -1,69 +1,40 @@
 var express = require('express');
 var router = express.Router();
-var Tasks = require('../models/task.js');
+var Task = require('../models/task.js');
 var jsonwebtoken = require('express-jwt');
 
 router.get('/:id?', function(req, res, next){
-	console.log("GET token: ", req.body.token);
-	var token = req.body.token;
-	// check if a token was sent
-	if(token) {
-		// validate the token
-		//jsonwebtoken.verify(token, 'kindaSecret', function (err, decoded) {
-		//	if(err) {// reject the request
-		//		res.status(403).send({
-		//			success: false,
-		//			message: 'Invalid token'
-		//		});
-		//	}else {// save the decoded token, continue
-		//		req.decoded = decoded;
-		//	}
-		//});
 
-		//// get the task id request, if there is one
-		//var search = {_id: req.user.id, tasks._id: req.id};
-		//
-		//
-		//
-		////console.log("notes authed");
-		//var search = {user_id: req.user.id};
-		//if(id) {
-		//	search.id = id;
-		//}
-		//Note.find(search, function (err, notes) {
-		//	if(err) {
-		//		return err;
-		//	}
-		//	console.log("all notes", notes);
-		//	// if requesting specific note, return that
-		//	if(id) {
-		//		res.json(notes);
-		//	}else {// else go to notes page
-		//		res.render('../views/notes', {title: "Notes", notes: notes});
-		//	}
-		//});
-		console.log("In token");
-		Tasks.Create(req.body, function (err, task) {
+	//var token = req.params.token;
+	//console.log("req token: ", token);
+	//// check if a token was sent
+	//if(token) {
+	//	console.log("In token");
+		Tasks.find({}, function (err, tasks) {
 			if(err) {
 				res.status(400).send(err.message);
-			}else {
-				res.status(200).send('Successfully inserted task.');
 			}
+			if(tasks.length == 0) {
+				res.send('No tasks created.');
+			}else {
+				res.json(tasks);
+			}
+
 		});
-	}else {
-		res.status(403).send({
-			success: false,
-			message: 'No token provided'
-		});
-	}
+	//}else {
+	//	res.status(403).send({
+	//		success: false,
+	//		message: 'No token provided'
+	//	});
+	//}
 });
 
 router.post('/', function(req, res, next) {
-	var token = req.body.token;
-	console.log("req: ", req.body);
+	//var token = req.body.token;
+	//console.log("req: ", req.body);
 
-	if(token) {
-		console.log("token exists", token);
+	//if(token) {
+	//	console.log("token exists", token);
 		//jsonwebtoken.verify(token, 'kindaSecret', function (err, decoded) {
 		//	res.status(403);
 		//	console.log("in verify");
@@ -78,20 +49,41 @@ router.post('/', function(req, res, next) {
 		//		req.decoded = decoded;
 		//	}
 		//});
-		Tasks.Create(req.body, function(err, task) {
+		var temp = req.body;
+		if(temp.start_date == null || temp.start_date === "undefined") {
+			delete temp["start_date"];
+		}
+		console.log("Pre task creation", temp);
+		var task = new Task(temp);
+		task.save(task, function(err, task) {
 			if(err) {
+				console.log(err, err.message);
 				res.status(400).send(err.message);
 			}else{
 				res.status(200).send('Task successfully inserted.');
 			}
 		});
 
-	}else {
-		res.status(403).send({
-			success: false,
-			message: 'No token provided'
-		});
-	}
+	//var temp = req.body;
+	//temp.user_id = req.user.id;
+	//var note = new Note(temp);
+	//console.log("authed note", note);
+	//note.save(note, function (err, post) {
+	//	if (err) {
+	//		console.log("post error", err);
+	//		res.status(500).send("post error");
+	//		next(err);
+	//	}else {
+	//		res.status(200).send("Saved ok!");
+	//	}
+	//});
+
+	//}else {
+	//	res.status(403).send({
+	//		success: false,
+	//		message: 'No token provided'
+	//	});
+	//}
 });
 
 module.exports = router;
