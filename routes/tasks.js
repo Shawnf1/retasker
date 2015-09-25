@@ -3,24 +3,24 @@ var router = express.Router();
 var Task = require('../models/task.js');
 var jsonwebtoken = require('express-jwt');
 
-router.get('/:id?', function(req, res, next){
+router.get('/', function(req, res, next){
 
 	//var token = req.params.token;
 	//console.log("req token: ", token);
 	//// check if a token was sent
 	//if(token) {
 	//	console.log("In token");
-		Tasks.find({}, function (err, tasks) {
-			if(err) {
-				res.status(400).send(err.message);
-			}
-			if(tasks.length == 0) {
-				res.send('No tasks created.');
-			}else {
-				res.json(tasks);
-			}
+	Task.find({}, function (err, tasks) {
+		if(err) {
+			res.status(400).send(err.message);
+		}
+		if(tasks.length == 0) {
+			res.send('No tasks created.');
+		}else {
+			res.json(tasks);
+		}
 
-		});
+	});
 	//}else {
 	//	res.status(403).send({
 	//		success: false,
@@ -60,7 +60,7 @@ router.post('/', function(req, res, next) {
 				console.log(err, err.message);
 				res.status(400).send(err.message);
 			}else{
-				res.status(200).send('Task successfully inserted.');
+				res.json(task).status(200);
 			}
 		});
 

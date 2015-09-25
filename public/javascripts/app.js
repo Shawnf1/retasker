@@ -90,10 +90,65 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	var task = {
 		token: token
 	};
+	$scope.freqOptions =
+		[
+			{
+				value: "",
+				text: "Select One"
+			},
+			{
+				value: "daily",
+				text: "Daily"
+			},
+			{
+				value: "weekly",
+				text: "Weekly"
+			},
+			{
+				value: "monthly",
+				text: "Monthly"
+			},
+			{
+				value: "quarterly",
+				text: "Quarterly"
+			},
+			{
+				value: "semi-annually",
+				text: "Semi Annually"
+			},
+			{
+				value: "annually",
+				text: "Annually"
+			}
+		];
+
+	$scope.repOptions =
+		[
+			//{
+			//	value: "",
+			//	text: "Select One"
+			//},
+			{
+				value: "indef",
+				text: "Indefinitely"
+			},
+			{
+				value: "times",
+				text: "Number of Times"
+			},
+			{
+				value: "date",
+				text: "End Date"
+			}
+		];
+		//"daily", "weekly", "monthly", "quarterly", "semi-annually", "annually"];
+	$scope.freq = $scope.freqOptions[0];
 	console.log("onload data: ", task);
 	$scope.show = function () {
 		$http.get('/tasks', {token: token}).then(function (res) {
-			console.log(res);
+			console.log("res data: ", res.data);
+			$scope.header = "Tasks";
+			$scope.tasks = res.data;
 		});
 	};
 	if(authService.isAuthed()) {
@@ -124,6 +179,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			$timeout(function () {
 				$scope.success = "";
 			}, 3000);
+			$scope.tasks.push(res.data);
 		}, function (res) {
 			console.log(res.responseText);
 			$scope.error = res.responseText;

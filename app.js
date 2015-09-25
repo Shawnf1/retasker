@@ -30,12 +30,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/notes', expressJwt({secret: 'kindaSecret'}));
 app.use('/tasks', expressJwt({secret: 'kindaSecret'}));
 
-app.use('/', index);
 app.use('/authenticate', authenticate);
 //app.use('/users', users);
 app.use('/register', register);
 app.use('/tasks', tasks);
 app.use('/notes', notes);
+app.use('/', index);
 
 //app.use('/private/*', expressJwt({secret: 'Über_spaß_token'}));
 
