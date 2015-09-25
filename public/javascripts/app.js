@@ -1,4 +1,4 @@
-var app = angular.module('taskApp', ['ngRoute', 'angularMoment']);
+var app = angular.module('taskApp', ['ngRoute']);
 
 app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider){
 	$locationProvider.html5Mode(true);
@@ -87,6 +87,9 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	var task = {
 		token: token
 	};
+	//console.log($moment());
+	//$scope.dateFormat = 'MM/DD/YYYY';
+	//$scope.fullDateFormat = 'MM/DD/YYYY h:mm';
 	$scope.freqOptions =
 		[
 			{
@@ -141,6 +144,19 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			console.log("res data: ", res.data);
 			$scope.header = "Tasks";
 			$scope.tasks = res.data;
+			$scope.tasks.forEach(function (v, i, a) {
+				a[i].created_on
+				//var self = $scope.tasks[i];
+				//console.log("created ", this.created_on);
+				self.created_on = moment(a[i].created_on).format("MM/DD/YYYY");
+				//console.log("created ", this.created_on);
+				a[i].updated_on = moment(a[i].updated_on).format("MM/DD/YYYY");
+				a[i].start_date = moment(a[i].start_date).format("MM/DD/YYYY");
+				if(a[i].end_date) {
+					a[i].end_date = moment(a[i].end_date).format("MM/DD/YYYY");
+				}
+			});
+			console.log("updated", $scope.tasks);
 		});
 	};
 	if(authService.isAuthed()) {
