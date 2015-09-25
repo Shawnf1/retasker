@@ -1,9 +1,6 @@
-var app = angular.module('taskApp', ['ngRoute']);
+var app = angular.module('taskApp', ['ngRoute', 'angularMoment']);
 
 app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider){
-	// clear out local storage on load
-	//localStorage.reset();
-
 	$locationProvider.html5Mode(true);
 	$routeProvider.when('/login',
 		{
@@ -124,10 +121,6 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 
 	$scope.repOptions =
 		[
-			//{
-			//	value: "",
-			//	text: "Select One"
-			//},
 			{
 				value: "indef",
 				text: "Indefinitely"
@@ -141,7 +134,6 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				text: "End Date"
 			}
 		];
-		//"daily", "weekly", "monthly", "quarterly", "semi-annually", "annually"];
 	$scope.freq = $scope.freqOptions[0];
 	console.log("onload data: ", task);
 	$scope.show = function () {

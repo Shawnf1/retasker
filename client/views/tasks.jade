@@ -11,23 +11,15 @@
                 .form-group.col-xs-12.col-md-2
                     label(for="title") Task Name:
                     input.form-control(required="true" ng-model="title")
+
                 .form-group.col-xs-12.col-md-4
                     label(for="desc") Description:
                     textarea#desc.form-control(ng-model="desc")
+
                 .form-group.col-xs-12.col-md-2
                     label(for="freq") Frequency:
-                    //select#freq.form-control(ng-model="freq" ng-options="o as o for o in freqOptions" required="true")
-                    //select#freq.form-control(ng-init="freqOptions[0].text" ng-model="freq" ng-options="o['value'] as o.text for o in freqOptions" required="true")
-                    //select#freq.form-control(ng-init="freqOptions[0].text" ng-model="freq" ng-options="opt.value as opt.text for opt in freqOptions" required="true")
                     select#freq_slct.form-control(ng-init="freqOptions[0]" ng-model="freq" ng-options="o.value as o.text for o in freqOptions track by o.value" required="true")
-                        //option(ng-repeat="option in freqOptions" value="{{ option.value }}") {{ option.text }}
-                        //option(value="default" selected="selected") Select One
-                        //option(value="daily") Daily
-                        //option(value="weekly") Weekly
-                        //option(value="monthly") Monthly
-                        //option(value="quarterly") Quarterly
-                        //option(value="semi-annually") Semi-Annually
-                        //option(value="annually") Annually
+
                 .form-group.col-xs-12.col-md-2
                     label(for="start") Start Date:
                     input.form-control(type="date" ng-model="start")
@@ -35,25 +27,7 @@
                 .form-group.col-xs-12.col-md-5
                     label(for="reps_slct") Repetitions:
                     select#reps_slct.form-control(ng-init="reps=repOptions[0]" ng-model="reps" ng-options="o.value as o.text for o in repOptions track by o.value")
-                    //select#reps_slct
-                    //    //option(ng-repeat=""
-                    //    option(value="indef_opt" selected="selected") Indefinitely
-                    //    option(value="times_opt") Number of Times
-                    //    option(value="date_opt") End Date
                     input#reps(placeholder="Repetitions value")
-
-                    //label.control-label Repetitions:
-                    //br
-                    //input#times_rad.form-control(type="radio" name="reps")
-                    //label(for="times_rad") Times:
-                    //input#times.form-control(type="number" ng-model="reps")
-                    //br
-                    //input#end_date_rad.form-control(type="radio" name="reps")
-                    //label(for="end_date_rad") End Date:
-                    //input#end_date.form-control(type="date" ng-model="end_date")
-                    //br
-                    //input#indef_rad.form-control(type="radio" name="reps")
-                    //label(for="indef_rad") Indefinitely
 
                 .form-group.col-xs-12.col-md-2
                     label
@@ -66,7 +40,7 @@
 table
     thead
         tr
-            th.center.header(colspan="10") {{ header }}
+            th.center.header(colspan="11") {{ header }}
         tr
             th.center Title
             th.center Description
@@ -78,6 +52,7 @@ table
             th.center Ended
             th.center Read Only
             th.center Tags
+            th.center End
         tr.task(ng-repeat="task in tasks")
             td.center {{ task.title }}
             td.center {{ task.desc }}
@@ -90,3 +65,5 @@ table
             td.center
                 input(type="checkbox" ng-checked="{{ task.read_only }}")
             td.center {{ task.tags }}
+            td.center
+                button(data-id="{{ task._id }}") X
