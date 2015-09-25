@@ -57,13 +57,13 @@ table
             td.center {{ task.title }}
             td.center {{ task.desc }}
             td.center {{ task.frequency }}
-            td.center {{ task.created_on }}
-            td.center {{ task.updated_on }}
-            td.center {{ task.start_date }}
+            td.center(title="{{ task.fCreate }}") {{ task.pCreate }}
+            td.center(title="{{ task.fUpdate }}") {{ task.pUpdate }}
+            td.center(title="{{ task.fStart }}") {{ task.pStart }}
             td.center {{ task.repetitions }}
-            td.center {{ task.end_date }}
+            td.center(title="{{ task.fEnd }}") {{ task.pEnd }}
             td.center
-                input(type="checkbox" ng-checked="{{ task.read_only }}")
+                input(type="checkbox" ng-checked="task.read_only")
             td.center {{ task.tags }}
             td.center
                 button(data-id="{{ task._id }}") X
