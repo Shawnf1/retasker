@@ -83,13 +83,8 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 
 app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$timeout', function($scope, $rootScope, authService, $http, $timeout){
 	$rootScope.user = authService.getUser();
-	var token = authService.getToken();
-	var task = {
-		token: token
-	};
-	//console.log($moment());
-	//$scope.dateFormat = 'MM/DD/YYYY';
-	//$scope.fullDateFormat = 'MM/DD/YYYY h:mm';
+	var prettyDate = "MM/DD/YYYY";
+	var fullDate = "MM/DD/YYYY h:mm:ss a";
 	$scope.freqOptions =
 		[
 			{
@@ -137,31 +132,30 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				text: "End Date"
 			}
 		];
-	// $scope.freq = $scope.freqOptions[0];
-	// console.log("onload data: ", task);
+
 	$scope.show = function () {
-		console.log("user_id", authService.getUserId());
+		//console.log("user_id", authService.getUserId());
 		$http.get('/tasks', {params: {user_id: authService.getUserId()}}).then(function (res) {
-			console.log("res data: ", res.data);
+			//console.log("res data: ", res.data);
 			$scope.header = "Tasks";
 			$scope.tasks = res.data;
 			$scope.tasks.forEach(function (v, i, a) {
 				// for each of the dates in an object, creating a pretty format (shrunk to date only) and full (with time)
-				a[i].pCreate = moment(a[i].created_on).format("MM/DD/YYYY");
-				a[i].fCreate = moment(a[i].created_on).format("MM/DD/YYYY h:mm:ss a");
+				a[i].pCreate = moment(a[i].created_on).format(prettyDate);
+				a[i].fCreate = moment(a[i].created_on).format(fullDate);
 
-				a[i].pUpdate = moment(a[i].updated_on).format("MM/DD/YYYY");
-				a[i].fUpdate = moment(a[i].updated_on).format("MM/DD/YYYY h:mm:ss a");
+				a[i].pUpdate = moment(a[i].updated_on).format(prettyDate);
+				a[i].fUpdate = moment(a[i].updated_on).format(fullDate);
 
-				a[i].pStart = moment(a[i].start_date).format("MM/DD/YYYY");
-				a[i].fStart = moment(a[i].start_date).format("MM/DD/YYYY h:mm:ss a");
+				a[i].pStart = moment(a[i].start_date).format(prettyDate);
+				a[i].fStart = moment(a[i].start_date).format(fullDate);
 
 				if(a[i].end_date) {
-					a[i].pEnd = moment(a[i].end_date).format("MM/DD/YYYY");
-					a[i].fEnd = moment(a[i].end_date).format("MM/DD/YYYY h:mm:ss a");
+					a[i].pEnd = moment(a[i].end_date).format(prettyDate);
+					a[i].fEnd = moment(a[i].end_date).format(fullDate);
 				}
 			});
-			console.log("updated", $scope.tasks);
+			//console.log("updated", $scope.tasks);
 		});
 	};
 	if(authService.isAuthed()) {
@@ -194,61 +188,47 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			}, 3000);
 			$scope.tasks.push(res.data);
 		}, function (res) {
-			console.log(res.responseText);
+			//console.log(res.responseText);
 			$scope.error = res.responseText;
-			//$timeout(function () {
-			//	$scope.error = "";
-			//}, 5000);
 		});
 	};
 }]);
 
 app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', function($scope, $rootScope, authService, $http){
+	$scope.header = "Notes";
 	$rootScope.user = authService.getUser();
+	var prettyDate = "MM/DD/YYYY";
+	var fullDate = "MM/DD/YYYY h:mm:ss a";
+
+	$scope.show = function () {
+		//console.log("user_id", authService.getUserId());
+		$http.get('/notes', {params: {user_id: authService.getUserId()}}).then(function (res) {
+			//console.log("res data: ", res.data);
+			//console.log("response", res);
+			if(res.data == "No notes created.") {
+				// show error message if don't receive an array back
+				//console.log("logging data", res.data);
+				$scope.error = res.data;
+			}else {
+				$scope.notes = res.data;
+				$scope.notes.forEach(function (v, i, a) {
+					// for each of the dates in an object, creating a pretty format (shrunk to date only) and full (with time)
+					a[i].pCreate = moment(a[i].created_on).format(prettyDate);
+					a[i].fCreate = moment(a[i].created_on).format(fullDate);
+
+					a[i].pUpdate = moment(a[i].updated_on).format(prettyDate);
+					a[i].fUpdate = moment(a[i].updated_on).format(fullDate);
+				});
+				console.log("updated", $scope.tasks);
+			}
+			//console.log("end note.show -> get");
+		});
+		//console.log("End note.show");
+	};
 	if(authService.isAuthed()) {
-		$scope.message = "Here are your notes!";
-		$scope.tagsArray = [];
-		$scope.AddNote = function () {
-			var note = {
-				title: $scope.title,
-				desc: $scope.desc,
-				tag: $scope.tagsArray,
-				read_only: $scope.read_only,
-				task: $scope.task
-			};
-			$http.post('/tasks', task).then(function (res) {
-				$scope.success = res.responseText;
-				$timeout(function () {
-					$scope.success = "";
-				}, 3000);
-				$scope.tasks.push(res.data);
-			}, function (res) {
-				console.log(res.responseText);
-				$scope.error = res.responseText;
-				//$timeout(function () {
-				//	$scope.error = "";
-				//}, 5000);
-			});
-		};
-		// load tags from db
-		$scope.getTags = function (query) {
-			//return $http.get()
-			return [{text: 'Tag1'}, {text: 'Tag2'}, {text: 'Tag3'}];
-		};
-		$scope.addTag = function (tag) {
-			console.log(tag);
-			$scope.tagsArray.push(tag);
-		};
-		$scope.highlight = function (element) {
-			element.select();
-		};
-		$scope.nothing = function () {
-			console.log("did nothing");
-		};
-		//$scope.removeTag = function (tag) {
-		//	var index = $scope.tagsArray.indexOf(tag);
-		//	$scope.tagsArray.splice(index, 1);
-		//};
+		$scope.message = "Here are your Notes!";
+		$scope.show();
+
 	}else {
 		$rootScope.user = { };
 		$scope.error = "You are not authorized to view this page";
@@ -256,6 +236,28 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', func
 			$location.path('/');
 		}, 3000);
 	}
+
+
+	$scope.addNote = function () {
+		var note = {
+			title: $scope.title,
+			desc: $scope.desc,
+			tag: $scope.tagsArray,
+			read_only: $scope.read_only,
+			task: $scope.task
+		};
+		var user = authService.getUserId();
+		$http.post('/notes', {user_id: user.id, note: note}).then(function (res) {
+			$scope.success = res.responseText;
+			$timeout(function () {
+				$scope.success = "";
+			}, 3000);
+			$scope.notes.push(res.data);
+		}, function (res) {
+			//console.log(res.responseText);
+			$scope.error = res.responseText;
+		});
+	};
 }]);
 
 app.controller('registerCtrl', ['$scope', '$http', '$location', '$interval', '$timeout', function($scope, $http, $location, $interval, $timeout){

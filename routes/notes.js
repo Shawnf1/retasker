@@ -1,79 +1,50 @@
 var express = require('express');
 var router = express.Router();
-var Tasks = require('../models/task.js');
-var jwt = require('express-jwt');
+var Note = require('../models/note.js').Model;
+var User = require('../models/user.js');
 
-router.get('/:id?', function(req, res, next){
-	var token = req.body.token;
-	// check if a token was sent
-	if(token) {
-		// validate the token
-		jwt.verify(token, 'kindaSecret', function (err, decoded) {
-			if(err) {// reject the request
-				res.status(403).send({
-					success: false,
-					message: 'Invalid token'
-				});
-			}else {// save the decoded token, continue
-				req.decoded = decoded;
-			}
-		});
+router.get('/', function(req, res, next){
+	// get user id for query
+	var id = req.query.user_id;
+	// query for tasks in user doc
+	User.findById(id, function (err, user) {
+		if(err) {
+			res.status(400).send(err.message);
+		}
+		// if the array is empty, display nothing
+		if(user.notes.length == 0) {
+			res.send('No notes created.');
+		}else {
+			// send back tasks array as json
+			res.json(user.notes);
+		}
 
-		//// get the task id request, if there is one
-		//var search = {_id: req.user.id, tasks._id: req.id};
-		//
-		//
-		//
-		////console.log("notes authed");
-		//var search = {user_id: req.user.id};
-		//if(id) {
-		//	search.id = id;
-		//}
-		//Note.find(search, function (err, notes) {
-		//	if(err) {
-		//		return err;
-		//	}
-		//	console.log("all notes", notes);
-		//	// if requesting specific note, return that
-		//	if(id) {
-		//		res.json(notes);
-		//	}else {// else go to notes page
-		//		res.render('../views/notes', {title: "Notes", notes: notes});
-		//	}
-		//});
-	}else {
-		res.status(403).send({
-			success: false,
-			message: 'No token provided'
-		});
-	}
+	});
 });
 
 router.post('/', function(req, res, next) {
-	var token = req.body.token;
-	if(token) {
-		jwt.verify(token, 'kindaSecret', function (err, decoded) {
-			if(err) {// reject the request
-				res.status(403).send({
-					success: false,
-					message: 'Invalid token'
-				});
-			}else {// save the decoded token, continue
-				req.decoded = decoded;
-			}
-		});
-		Tasks.Create(req.body, function(err, task) {
+	if(req.body.user_id === "undefined") {
+		res.status(400).send("No user sent.");
+	}else if(req.body.note === "undefined") {
+		res.status(400).send("No note sent.");
+	}else {
+		// save task to temp for modification
+		var temp = req.body.note;
+		// get user id for queries
+		var user = req.body.user_id;
+
+		var note = new Note(temp);
+
+		console.log("final note to push", task);
+
+		// push new task to user
+		User.findByIdAndUpdate({_id: user}, {$push: {'notes': note}}, {safe: true, upsert: false, new: true}, function(err, user) {
 			if(err) {
+				console.log(err, err.message);
 				res.status(400).send(err.message);
 			}else{
-				res.status(200).send('Task successfully inserted.');
+				res.json(note).status(200);
 			}
-		});
-
-	}else {
-		res.status(403).send({
-			success: false,
-			message: 'No token provided'
 		});
 	}
 });
