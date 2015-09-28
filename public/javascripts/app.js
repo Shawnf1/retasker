@@ -185,7 +185,8 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			repetitions: $scope.reps,
 			read_only: $scope.read_only
 		};
-		$http.post('/tasks', task).then(function (res) {
+		var user = authService.getUser();
+		$http.post('/tasks', {user_id: user.id, task: task}).then(function (res) {
 			$scope.success = res.responseText;
 			$timeout(function () {
 				$scope.success = "";

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var Task = require('../models/task.js');
-var jsonwebtoken = require('express-jwt');
+var Task = require('../models/task.js').Model;
+var User = require('../models/user.js');
 
 router.get('/', function(req, res, next){
 
@@ -49,13 +49,41 @@ router.post('/', function(req, res, next) {
 		//		req.decoded = decoded;
 		//	}
 		//});
-		var temp = req.body;
+		var temp = req.body.task;
+		var user = req.body.user_id;
 		if(temp.start_date == null || temp.start_date === "undefined") {
 			delete temp["start_date"];
 		}
-		console.log("Pre task creation", temp);
+		//console.log("Pre task creation", temp, "for user ", user);
 		var task = new Task(temp);
-		task.save(task, function(err, task) {
+		//task.save(task, function(err, task) {
+		//	if(err) {
+		//		console.log(err, err.message);
+		//		res.status(400).send(err.message);
+		//	}else{
+		//		res.json(task).status(200);
+		//	}
+		//});
+		//User.findByIdAndUpdate(
+		//	user,
+		//		{ $push: {"tasks": req.body.task}},
+		//		{  safe: true, upsert: true},
+		//		function(err, model) {
+		//			if(err){
+		//				console.log(err);
+		//				return res.send(err);
+		//			}
+		//			return res.json(model);
+		//});
+		console.log("final task to push", task);
+		//User.findByIdAndUpdate(user, User.tasks.push(task), {safe: true, upsert: true, new: true}, function(err, task) {
+		////User.findByIdAndUpdate({"_id": user}, {$push: {"tasks": task} }, {safe: true, upsert: true, new: true}, function(err, task) {
+		////User.findByIdAndUpdate({"_id": user}, {$addToSet: {"tasks": task} }, {safe: true, upsert: true, new: true}, function(err, task) {
+		//
+		//// 1st is working:
+
+		//User.findByIdAndUpdate({_id: user}, User.tasks.push(task), {safe: true, upsert: false, new: true}, function(err, task) {
+		User.findByIdAndUpdate({_id: user}, {$push: {'tasks': task}}, {safe: true, upsert: false, new: true}, function(err, task) {
 			if(err) {
 				console.log(err, err.message);
 				res.status(400).send(err.message);

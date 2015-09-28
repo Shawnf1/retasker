@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt');
 var jsonwebtoken = require('jsonwebtoken');
 var SALT_WORK_FACTOR = 10;
-var TaskSchema = require('./task.js');
+var TaskSchema = require('./task.js').Schema;
 var NoteSchema = require('./note.js');
 var TagSchema = require('./tag.js');
 

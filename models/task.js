@@ -38,4 +38,5 @@ TaskSchema.pre('save', function(next) {
 	next();
 });
 
-module.exports = mongoose.model('Task', TaskSchema);
+module.exports.Model = mongoose.model('Task', TaskSchema);
+module.exports.Schema = TaskSchema;
