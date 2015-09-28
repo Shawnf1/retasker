@@ -6,13 +6,11 @@ var Tag = require('./tag.js').Schema;
 var NoteSchema = new Schema({
 	title: String,
 	note: {type: String, required: true},
-	user_id: {type: String, required: true},
 	created_on: Date,
 	updated_on: Date,
 	read_only: {type: Boolean, default: false},
-	tags: [{type: Schema.ObjectId, ref: 'Tag'}]
-	//,
-	//task_link: {type: mongoose.Schema.ObjectId, ref: 'Task'}
+	tags: [{type: Schema.ObjectId, ref: 'Tag'}],
+	task_link: {type: mongoose.Schema.ObjectId, ref: 'Task'}
 });
 
 NoteSchema.pre('save', function(next) {

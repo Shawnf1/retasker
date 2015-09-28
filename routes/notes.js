@@ -23,11 +23,13 @@ router.get('/', function(req, res, next){
 });
 
 router.post('/', function(req, res, next) {
-	if(req.body.user_id === "undefined") {
+	console.log("in notes post");
+	if(req.body.user_id === undefined || !req.body.user_id.length) {
 		res.status(400).send("No user sent.");
-	}else if(req.body.note === "undefined") {
+	}else if(req.body.note === undefined) {
 		res.status(400).send("No note sent.");
 	}else {
+		console.log("passed tests for posting notes");
 		// save task to temp for modification
 		var temp = req.body.note;
 		// get user id for queries
@@ -35,9 +37,9 @@ router.post('/', function(req, res, next) {
 
 		var note = new Note(temp);
 
-		console.log("final note to push", task);
+		console.log("final note to push", note);
 
-		// push new task to user
+		// push new note to user
 		User.findByIdAndUpdate({_id: user}, {$push: {'notes': note}}, {safe: true, upsert: false, new: true}, function(err, user) {
 			if(err) {
 				console.log(err, err.message);

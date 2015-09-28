@@ -246,8 +246,7 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', func
 			read_only: $scope.read_only,
 			task: $scope.task
 		};
-		var user = authService.getUserId();
-		$http.post('/notes', {user_id: user.id, note: note}).then(function (res) {
+		$http.post('/notes', {user_id: authService.getUserId(), note: note}).then(function (res) {
 			$scope.success = res.responseText;
 			$timeout(function () {
 				$scope.success = "";
