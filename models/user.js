@@ -5,8 +5,8 @@ var bcrypt = require('bcrypt');
 var jsonwebtoken = require('jsonwebtoken');
 var SALT_WORK_FACTOR = 10;
 var TaskSchema = require('./task.js').Schema;
-var NoteSchema = require('./note.js');
-var TagSchema = require('./tag.js');
+var NoteSchema = require('./note.js').Schema;
+var TagSchema = require('./tag.js').Schema;
 
 var UserSchema = new Schema({
 	username: {type: String, required: true, index: {unique: true}},

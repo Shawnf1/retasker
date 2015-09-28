@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var Tag = require('./tag.js');
-var Task = require('./task.js');
+var Tag = require('./tag.js').Schema;
+var Task = require('./task.js').Schema;
 
 var NoteSchema = new Schema({
 	title: String,
@@ -29,4 +29,5 @@ NoteSchema.pre('save', function(next) {
 	next();
 });
 
-module.exports = mongoose.model('Note', NoteSchema);
+module.exports.Model = mongoose.model('Note', NoteSchema);
+module.exports.Schema = NoteSchema;

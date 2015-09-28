@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var Tag = require('./tag.js');
+var Tag = require('./tag.js').Schema;
 
 var TaskSchema = new Schema({
 	title: {type: String, required: true},
