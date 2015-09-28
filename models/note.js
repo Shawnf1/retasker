@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Tag = require('./tag.js').Schema;
-//var Task = require('./task.js').Schema;
+var Task = require('./task.js').Schema;
 
 var NoteSchema = new Schema({
 	title: String,

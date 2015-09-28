@@ -180,8 +180,8 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			repetitions: $scope.reps,
 			read_only: $scope.read_only
 		};
-		var user = authService.getUserId();
-		$http.post('/tasks', {user_id: user.id, task: task}).then(function (res) {
+		//var user = authService.getUserId();
+		$http.post('/tasks', {user_id: authService.getUserId(), task: task}).then(function (res) {
 			$scope.success = res.responseText;
 			$timeout(function () {
 				$scope.success = "";
@@ -219,7 +219,7 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', func
 					a[i].pUpdate = moment(a[i].updated_on).format(prettyDate);
 					a[i].fUpdate = moment(a[i].updated_on).format(fullDate);
 				});
-				console.log("updated", $scope.tasks);
+				//console.log("updated", $scope.tasks);
 			}
 			//console.log("end note.show -> get");
 		});
@@ -251,7 +251,8 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', func
 			$timeout(function () {
 				$scope.success = "";
 			}, 3000);
-			$scope.notes.push(res.data);
+			console.log("Post notes push", res.data);
+			//$scope.notes.push(res.data);
 		}, function (res) {
 			//console.log(res.responseText);
 			$scope.error = res.responseText;
@@ -324,7 +325,7 @@ app.controller('logoutCtrl', ['$scope', '$location', '$timeout', '$interval', 'a
 
 app.controller('tagCtrl',['$scope',function($scope){
 	$scope.$watchCollection('tags',function(val){
-		console.log(val, $scope.data);
+		//console.log(val, $scope.data);
 	});
 }]);
 

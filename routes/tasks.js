@@ -33,7 +33,7 @@ router.post('/', function(req, res, next) {
 	}
 	var task = new Task(temp);
 
-	console.log("final task to push", task);
+	console.log("final task to push", task, " for user ", user);
 
 	// push new task to user
 	User.findByIdAndUpdate({_id: user}, {$push: {'tasks': task}}, {safe: true, upsert: false, new: true}, function(err, user) {

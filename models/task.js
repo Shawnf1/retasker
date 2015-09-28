@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var Tag = require('./tag.js').Schema;
+//var Tag = require('./tag.js').Schema;
+//var User = require('./user.js');
 
 var TaskSchema = new Schema({
 	title: {type: String, required: true},
@@ -11,23 +12,35 @@ var TaskSchema = new Schema({
 	start_date: Date,
 	repetitions: Number,
 	end_date: Date,
-	read_only: {type: Boolean, default: false},
-	tags: [{type: Schema.ObjectId,  ref: 'Tag'}]
+	read_only: {type: Boolean, default: false}
+	//,
+	//tags: [{type: Schema.ObjectId,  ref: 'Tag'}]
 });
 
 TaskSchema.pre('save', function(next) {
-	var task = this;
+	var self = this;
 	console.log("in presave", task);
 	//console.log("presave\n", note);
 
+	//// first need to process tags, add them to the user (parent) document if no id
+	//if(self.tags) {
+	//	self.tags.forEach(function (v, i, a) {
+	//		if(!a[i].id) {
+	//			var tag = new Tag(a[i]);
+	//
+	//		}
+	//	});
+	//}
+	//User.findByIdAndUpdate()
+
 	// set creation date
-	if(!task.created_on) {
-		task.created_on = new Date();
+	if(!self.created_on) {
+		self.created_on = new Date();
 	}
 
-	task.updated_on = new Date();
+	self.updated_on = new Date();
 
-	task.start_date = new Date();
+	self.start_date = new Date();
 	// default to start date today
 	//if(!task.start_date) {
 	//	task.start_date = new Date();
