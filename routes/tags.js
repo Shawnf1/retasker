@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var Tag = require('../models/tag.js');
+var Tag = require('../models/tag.js').Model;
 var User = require('../models/user.js');
 
 router.get('/:term?', function(req, res, next){
@@ -39,23 +39,40 @@ router.get('/:term?', function(req, res, next){
 
 
 router.post('/', function (req, res, next) {
-	var temp = req.body.tag;
-	var user = req.body.user_id;
+	// if no tags sent
+	if(req.body.tags === undefined || !req.body.tags.length) {
+		res.status(400).send("No tags sent.");
+	}else if(req.body.user_id === undefined || !req.body.user_id.length) {
+		res.status(400).send("No user sent.");
+	}else {
+		var temp = req.body.tags;
+		var id = req.body.user_id;
 
-	console.log("tags for user", temp, user);
+		console.log("tags for user", temp, id);
 
-	// if no id, need to insert
-	if(!temp.id) {
-		var tag = new Tag(temp);
+		// if no id, need to insert
+		if(!temp.id) {
+			var tag = new Tag(temp);
 
-		User.findByIdAndUpdate(user, {$push: {'tags': tag}}, {safe:true, upsert: false, new:true}, function (err, user) {
-			if(err) {
-				console.log(err, err.message);
-				res.status(400).send(err.message);
-			}else{
-				res.status(200);
-			}
-		});
+
+			//User.findById(id, function (err, user) {
+			//	if(err) {
+			//		console.log(err, err.message);
+			//		res.status(400).send(err.message);
+			//	}else {
+			//		console.log("user", user);
+			//		res.status(200).json(tag);
+			//	}
+			//});
+			User.findByIdAndUpdate(id, {$push: {'tags': tag}}, {safe: true, upsert: false, new: true}, function(err, user) {
+				if(err) {
+					console.log(err, err.message);
+					res.status(400).send(err.message);
+				}else{
+					res.json(tag).status(200);
+				}
+			});
+		}
 	}
 });
 
