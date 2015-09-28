@@ -35,7 +35,7 @@
 table
     thead
         tr
-            th.center.header(colspan="9") {{ header }}
+            th.center.header(colspan="8") {{ header }}
         tr
             th.center Title
             th.center Description
@@ -44,8 +44,7 @@ table
             th.center Read Only
             th.center Tags
             th.center Task
-            th.center Read Only
-            th.center End
+            th.center Delete
         tr.task(ng-repeat="note in notes")
             td.center {{ note.title }}
             td.center {{ note.desc }}
