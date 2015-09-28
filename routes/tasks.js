@@ -3,30 +3,23 @@ var router = express.Router();
 var Task = require('../models/task.js').Model;
 var User = require('../models/user.js');
 
-router.get('/', function(req, res, next){
-
-	//var token = req.params.token;
-	//console.log("req token: ", token);
-	//// check if a token was sent
-	//if(token) {
-	//	console.log("In token");
-	Task.find({}, function (err, tasks) {
+router.get('/:user?', function(req, res, next){
+	// get user id for query
+	var user = req.query.user_id;
+	// query for tasks in user doc
+	User.findById(user, function (err, user) {
 		if(err) {
 			res.status(400).send(err.message);
 		}
-		if(tasks.length == 0) {
+		// if the array is empty, display nothing
+		if(user.tasks.length == 0) {
 			res.send('No tasks created.');
 		}else {
-			res.json(tasks);
+			// send back tasks array as json
+			res.json(user.tasks);
 		}
 
 	});
-	//}else {
-	//	res.status(403).send({
-	//		success: false,
-	//		message: 'No token provided'
-	//	});
-	//}
 });
 
 router.post('/', function(req, res, next) {

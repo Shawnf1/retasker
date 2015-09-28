@@ -140,7 +140,8 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	// $scope.freq = $scope.freqOptions[0];
 	// console.log("onload data: ", task);
 	$scope.show = function () {
-		$http.get('/tasks', {token: token}).then(function (res) {
+		console.log("user_id", authService.getUserId());
+		$http.get('/tasks', {params: {user_id: authService.getUserId()}}).then(function (res) {
 			console.log("res data: ", res.data);
 			$scope.header = "Tasks";
 			$scope.tasks = res.data;
@@ -185,7 +186,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			repetitions: $scope.reps,
 			read_only: $scope.read_only
 		};
-		var user = authService.getUser();
+		var user = authService.getUserId();
 		$http.post('/tasks', {user_id: user.id, task: task}).then(function (res) {
 			$scope.success = res.responseText;
 			$timeout(function () {
@@ -370,6 +371,11 @@ app.service('authService', ['$window', function ($window) {
 	this.getUser = function () {
 		return self.parseJwt(self.getToken())
 	};
+
+	// return just user id for queries
+	this.getUserId = function () {
+		return self.getUser().id;
+	}
 }]);
 
 app.factory('authInterceptor', ['$q', '$location', 'authService', function ($q, $location, authService) {
