@@ -14,6 +14,7 @@ var index = require('./routes/index');
 var authenticate = require('./routes/authenticate');
 var register = require('./routes/register');
 var tasks = require('./routes/tasks');
+var tags = require('./routes/tags');
 var notes = require('./routes/notes');
 
 var app = express();
@@ -32,11 +33,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/notes', expressJwt({secret: 'kindaSecret'}));
 app.use('/tasks', expressJwt({secret: 'kindaSecret'}));
+app.use('/tags', expressJwt({secret: 'kindaSecret'}));
 
 app.use('/authenticate', authenticate);
 //app.use('/users', users);
 app.use('/register', register);
 app.use('/tasks', tasks);
+app.use('/tags', tags);
 app.use('/notes', notes);
 app.use('/', index);
 

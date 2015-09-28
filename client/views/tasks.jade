@@ -61,7 +61,7 @@ table
             td.center(title="{{ task.fUpdate }}") {{ task.pUpdate }}
             td.center(title="{{ task.fStart }}") {{ task.pStart }}
             td.center {{ task.repetitions }}
-            td.center(title="{{ task.fEnd }}") {{ task.pEnd }}
+            td.center(title="{{ task.fEnd }}") {{ task.pEnd ? task.pEnd : "-" }}
             td.center
                 input(type="checkbox" ng-checked="task.read_only")
             td.center {{ task.tags }}

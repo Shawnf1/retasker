@@ -1,0 +1,9 @@
+.tags-wraper
+    #tagsList.tags-cloud
+        .tag(ng-repeat="selectedTag in selectedTags")
+            span.tagName {{ selectedTag }}
+            span &nbsp
+                b.fa.fa-times.cross(ng-click="removeTag($index)")
+        input#searchInput.form-control(type="text" placeholder="Type a tag name"   ng-keydown="checkKeyDown($event)" ng-model="searchText" ng-change="search()")
+    ul#suggestions.suggestions-list
+        li.blockSpan(ng-repeat="suggestion in suggestions" ng-click="addToSelectedTags($index)" ng-mouseover="$prent.seectedIndex = $index" ng-class="{active: selectedIndex === $index}") {{ suggestion }}

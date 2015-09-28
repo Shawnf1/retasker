@@ -7,18 +7,55 @@
             | {{ success }} {{ time }}
 
 .container-fluid
-    form.form-inline(ng-submit="addTask()")
-        .row
-            .form-group.col-xs-12.col-md-2
-                label.sr-only(for="title") Note Name:
-                input(placeholder="Note Name" ng-model="title")
-            .form-group.col-xs-12.col-md-2
-                label.sr-only(for="note") Note:
-                textarea(placeholder="Note" ng-model="note")
-        .row
-            .form-group.col-xs-12.col-md-2
-                label
-                    input(type="checkbox" ng-model="read_only")
-                    | &nbsp Read-only
-            .form-group.col-xs-6.col-md-2
-                button Save
+    form.form-inline(role="form" ng-submit="addNote()")
+        fieldset
+            legend Add A New Note
+            .row
+                .form-group.col-xs-12.col-md-2
+                    label(for="title") Note Name:
+                    input.form-control(required="true" ng-model="title" highlight-matched-text=false select-first-match=false)
+                .form-group.col-xs-12.col-md-2.top-buffer(ng-controller="tagCtrl")
+                    label(for="tags") Tags:
+                    div#tags(auto-complete url="/tags" model="tags")
+            .row
+                .form-group.col-xs-12.col-md-4
+                    label(for="desc") Description:
+                    textarea#desc.form-control(ng-model="desc")
+
+                .form-group.col-xs-12.col-md-2
+                    label
+                        input.form-control(type="checkbox" ng-model="read_only")
+                        | &nbsp Read-only
+
+                .form-group.col-xs-6.col-md-2
+                    button.form-control Save
+
+    //span(ng-repeat="task in tasks")
+
+table
+    thead
+        tr
+            th.center.header(colspan="8") {{ header }}
+        tr
+            th.center Title
+            th.center Description
+            th.center Created
+            th.center Updated
+            th.center Read Only
+            th.center Tags
+            th.center Task
+            th.center End
+        tr.task(ng-repeat="task in tasks")
+            td.center {{ task.title }}
+            td.center {{ task.desc }}
+            td.center {{ task.frequency }}
+            td.center(title="{{ task.fCreate }}") {{ task.pCreate }}
+            td.center(title="{{ task.fUpdate }}") {{ task.pUpdate }}
+            td.center(title="{{ task.fStart }}") {{ task.pStart }}
+            td.center {{ task.repetitions }}
+            td.center(title="{{ task.fEnd }}") {{ task.pEnd ? task.pEnd : "-" }}
+            td.center
+                input(type="checkbox" ng-checked="task.read_only")
+            td.center {{ task.tags }}
+            td.center
+                button(data-id="{{ task._id }}") X

@@ -1,4 +1,4 @@
-var app = angular.module('taskApp', ['ngRoute']);
+var app = angular.module('taskApp', ['ngRoute', 'ngTagsInput']);
 
 app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider){
 	$locationProvider.html5Mode(true);
@@ -137,8 +137,8 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				text: "End Date"
 			}
 		];
-	$scope.freq = $scope.freqOptions[0];
-	console.log("onload data: ", task);
+	// $scope.freq = $scope.freqOptions[0];
+	// console.log("onload data: ", task);
 	$scope.show = function () {
 		$http.get('/tasks', {token: token}).then(function (res) {
 			console.log("res data: ", res.data);
@@ -178,7 +178,6 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 
 	$scope.addTask = function () {
 		var task = {
-			//token: authService.getToken(),
 			title: $scope.title,
 			desc: $scope.desc,
 			frequency: $scope.freq,
@@ -202,10 +201,52 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	};
 }]);
 
-app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', function($scope, $rootScope, authService){
+app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', function($scope, $rootScope, authService, $http){
 	$rootScope.user = authService.getUser();
 	if(authService.isAuthed()) {
 		$scope.message = "Here are your notes!";
+		$scope.tagsArray = [];
+		$scope.AddNote = function () {
+			var note = {
+				title: $scope.title,
+				desc: $scope.desc,
+				tag: $scope.tagsArray,
+				read_only: $scope.read_only,
+				task: $scope.task
+			};
+			$http.post('/tasks', task).then(function (res) {
+				$scope.success = res.responseText;
+				$timeout(function () {
+					$scope.success = "";
+				}, 3000);
+				$scope.tasks.push(res.data);
+			}, function (res) {
+				console.log(res.responseText);
+				$scope.error = res.responseText;
+				//$timeout(function () {
+				//	$scope.error = "";
+				//}, 5000);
+			});
+		};
+		// load tags from db
+		$scope.getTags = function (query) {
+			//return $http.get()
+			return [{text: 'Tag1'}, {text: 'Tag2'}, {text: 'Tag3'}];
+		};
+		$scope.addTag = function (tag) {
+			console.log(tag);
+			$scope.tagsArray.push(tag);
+		};
+		$scope.highlight = function (element) {
+			element.select();
+		};
+		$scope.nothing = function () {
+			console.log("did nothing");
+		};
+		//$scope.removeTag = function (tag) {
+		//	var index = $scope.tagsArray.indexOf(tag);
+		//	$scope.tagsArray.splice(index, 1);
+		//};
 	}else {
 		$rootScope.user = { };
 		$scope.error = "You are not authorized to view this page";
@@ -277,6 +318,13 @@ app.controller('logoutCtrl', ['$scope', '$location', '$timeout', '$interval', 'a
 		$location.path('/');
 	}, 2000);
 }]);
+
+app.controller('tagCtrl',['$scope',function($scope){
+	$scope.$watchCollection('tags',function(val){
+		console.log(val, $scope.data);
+	});
+}]);
+
 
 app.service('authService', ['$window', function ($window) {
 
@@ -350,4 +398,81 @@ app.factory('authInterceptor', ['$q', '$location', 'authService', function ($q, 
 			return $q.reject(response);
 		}
 	};
+}]);
+
+app.directive('autoComplete',['$http',function($http){
+	return {
+		restrict:'AE',
+		scope:{
+			selectedTags:'=model'
+		},
+		templateUrl:'/views/autocomplete.html',
+		link:function(scope,elem,attrs){
+
+			scope.suggestions=[];
+
+			scope.selectedTags=[];
+
+			scope.selectedIndex=-1;
+
+			scope.removeTag=function(index){
+				scope.selectedTags.splice(index,1);
+			};
+
+			scope.search=function(){
+				console.log("Search ", scope.searchText);
+				//$http.get(attrs.url, {params: {term: scope.searchText}}).success(function(data){
+				//$http.get(attrs.url+'?term='+scope.searchText).success(function(data){
+				$http({
+					method: 'GET',
+					url: attrs.url,
+					params: {term: scope.searchText}
+				}).then( function (data) {
+					var res = data.data;
+					console.log("tags", data, data.data);
+					if(res.indexOf(scope.searchText)===-1){
+						res.unshift(scope.searchText);
+					}
+					scope.suggestions=res;
+					scope.selectedIndex=-1;
+				});
+			};
+
+			scope.addToSelectedTags=function(index){
+				if(scope.selectedTags.indexOf(scope.suggestions[index])===-1){
+					scope.selectedTags.push(scope.suggestions[index]);
+					scope.searchText='';
+					scope.suggestions=[];
+				}
+			};
+
+			scope.checkKeyDown=function(event){
+				if(event.keyCode===40){
+					event.preventDefault();
+					if(scope.selectedIndex+1 !== scope.suggestions.length){
+						scope.selectedIndex++;
+					}
+				}
+				else if(event.keyCode===38){
+					event.preventDefault();
+					if(scope.selectedIndex-1 !== -1){
+						scope.selectedIndex--;
+					}
+				}
+				else if(event.keyCode===13){
+					if(scope.selectedIndex === -1) {
+						scope.addToSelectedTags(0);
+					}else {
+						scope.addToSelectedTags(scope.selectedIndex);
+					}
+				}
+			};
+
+			scope.$watch('selectedIndex',function(val){
+				if(val!==-1) {
+					scope.searchText = scope.suggestions[scope.selectedIndex];
+				}
+			});
+		}
+	}
 }]);
