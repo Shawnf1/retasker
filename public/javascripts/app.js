@@ -417,7 +417,7 @@ app.factory('authInterceptor', ['$q', '$location', 'authService', function ($q, 
 	};
 }]);
 
-app.directive('autoComplete',['$http',function($http){
+app.directive('autoComplete',['$http', 'authService',function($http, authService){
 	return {
 		restrict:'AE',
 		scope:{
@@ -437,22 +437,24 @@ app.directive('autoComplete',['$http',function($http){
 			};
 
 			scope.search=function(){
-				console.log("Search ", scope.searchText);
-				//$http.get(attrs.url, {params: {term: scope.searchText}}).success(function(data){
-				//$http.get(attrs.url+'?term='+scope.searchText).success(function(data){
-				$http({
-					method: 'GET',
-					url: attrs.url,
-					params: {term: scope.searchText}
-				}).then( function (data) {
-					var res = data.data;
-					console.log("tags", data, data.data);
-					if(res.indexOf(scope.searchText)===-1){
-						res.unshift(scope.searchText);
-					}
-					scope.suggestions=res;
-					scope.selectedIndex=-1;
-				});
+				if(scope.searchText.length > 2) {
+					console.log("Search ", scope.searchText);
+					//$http.get(attrs.url, {params: {term: scope.searchText}}).success(function(data){
+					//$http.get(attrs.url+'?term='+scope.searchText).success(function(data){
+					$http({
+						method: 'GET',
+						url: attrs.url,
+						params: {user_id: authService.getUserId(), term: scope.searchText}
+					}).then( function (data) {
+						var res = data.data;
+						console.log("tags", data, data.data);
+						if(res.indexOf(scope.searchText)===-1){
+							res.unshift(scope.searchText);
+						}
+						scope.suggestions=res;
+						scope.selectedIndex=-1;
+					});
+				}
 			};
 
 			scope.addToSelectedTags=function(index){
@@ -486,7 +488,7 @@ app.directive('autoComplete',['$http',function($http){
 			};
 
 			scope.$watch('selectedIndex',function(val){
-				if(val!==-1) {
+				if(val !== -1) {
 					scope.searchText = scope.suggestions[scope.selectedIndex];
 				}
 			});
