@@ -39,43 +39,20 @@ router.get('/:term?', function(req, res, next){
 
 
 router.post('/', function (req, res, next) {
-	// if no tags sent
-	//if(req.body.tags === undefined || !req.body.tags.length) {
-	//	res.status(400).send("No tags sent.");
-	//}else if(req.body.user_id === undefined || !req.body.user_id.length) {
-	//	res.status(400).send("No user sent.");
-	//}else {
-	//	var temp = req.body.tags;
-	//	var id = req.body.user_id;
-	//
-	//	console.log("tags for user", temp, id);
-	//
-	//	// if no id, need to insert
-	//	if(!temp.id) {
-	//		var tag = new Tag(temp);
-	//
-	var temp = req.body.tags;
+	var tags = req.body.tags;
 	var id = req.body.user_id;
-			//User.findById(id, function (err, user) {
-			//	if(err) {
-			//		console.log(err, err.message);
-			//		res.status(400).send(err.message);
-			//	}else {
-			//		console.log("user", user);
-			//		res.status(200).json(tag);
-			//	}
-			//});
-	console.log("user, tag to insert", id, temp);
-			User.findByIdAndUpdate(id, {$push: {'tags': temp}}, {safe: true, upsert: true, new: true}, function(err, user) {
-				if(err) {
-					console.log(err, err.message);
-					res.status(400).send(err.message);
-				}else{
-					res.json(temp).status(200);
-				}
-			});
-	//	}
-	//}
+
+	//tags.forEach(function (v, i, a) {
+	//	console.log("user, tag to insert", id, v);
+		User.findByIdAndUpdate(id, {$push: {'tags': {$each: tags}}}, {safe: true, upsert: true, new: true}, function(err, user) {
+			if(err) {
+				console.log(err, err.message);
+				res.status(400).send(err.message);
+			}else{
+				res.json(tags).status(200);
+			}
+		});
+	//})
 });
 
 module.exports = router;

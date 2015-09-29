@@ -172,7 +172,8 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 
 
 	$scope.addTask = function () {
-		$http.post('/tags', {tags: [{title: "test"}], user_id: authService.getUserId()}).then(function (res) {
+		$http.post('/tags', {tags: [{title: "test"}, {title: "test 2"}, {title: "test 3"}], user_id: authService.getUserId()}).then(function (res) {
+		//$http.post('/tags', {tags: [{title: "test"}], user_id: authService.getUserId()}).then(function (res) {
 			console.log("added tags");
 		}, function (res) {
 			console.log("failed to add tags");
