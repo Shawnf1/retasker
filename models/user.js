@@ -169,4 +169,6 @@ UserSchema.statics.Create = function (user, callback) {
 	});
 
 };
-module.exports = mongoose.model('User', UserSchema);
+//module.exports = mongoose.model('User', UserSchema);
+module.exports.Model = mongoose.model('User', UserSchema);
+module.exports.Schema = UserSchema;
