@@ -12,9 +12,8 @@ var TaskSchema = new Schema({
 	start_date: Date,
 	repetitions: Number,
 	end_date: Date,
-	read_only: {type: Boolean, default: false}
-	//,
-	//tags: [{type: Schema.ObjectId,  ref: 'Tag'}]
+	read_only: {type: Boolean, default: false},
+	tags: [{type: Schema.ObjectId,  ref: 'Tag'}]
 });
 
 TaskSchema.pre('save', function(next) {

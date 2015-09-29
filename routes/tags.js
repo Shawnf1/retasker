@@ -43,12 +43,11 @@ router.post('/', function (req, res, next) {
 	var user_id = req.body.user_id;
 
 	Tag.processTags(user_id, tags, returnTags, res);
-	res.status(200).json(newTags);
 });
 
 // end of the callback loop to send response
-function returnTags(tags, res) {
-	res.status(200).json(tags);
-};
+//function returnTags(tags, res) {
+//	res.status(200).json(tags);
+//};
 
 module.exports = router;
