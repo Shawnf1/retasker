@@ -225,7 +225,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 		});
 	};
 
-	$scope.updateReadOnly = function ($index, task_id, status, title) {
+	$scope.updateReadOnly = function (index, task_id, status, title) {
 		$http.put('/tasks/read_only', {user_id: authService.getUserId(), task_id: task_id, read_only: status}).then(function (res) {
 			// flash success message to user, then remove after 3 seconds
 			$scope.success = "Successfully updated '"+ title +"' read only status to "+ status;
@@ -238,14 +238,14 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			$timeout(function () {
 				$scope.error = "";
 			}, 3000);
-			$scope.tasks[$index].read_only = !status;
+			$scope.tasks[index].read_only = !status;
 		});
 	};
 
-	$scope.endTask = function ($index, task_id, title) {
+	$scope.endTask = function (index, task_id, title) {
 		$http.put('/tasks/end', {user_id: authService.getUserId(), task_id: task_id}).then(function (res) {
-			$scope.tasks[$index].pEnd = moment(res.data).format(prettyDate);
-			$scope.tasks[$index].fEnd = moment(res.data).format(fullDate);
+			$scope.tasks[index].pEnd = moment(res.data).format(prettyDate);
+			$scope.tasks[index].fEnd = moment(res.data).format(fullDate);
 			// flash success message to user, then remove after 3 seconds
 			$scope.success = "Successfully ended "+ title;
 			$timeout(function () {
@@ -274,7 +274,7 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	$scope.show = function () {
 		//console.log("user_id", authService.getUserId());
 		$http.get('/notes', {params: {user_id: authService.getUserId()}}).then(function (res) {
-			console.log("res data: ", res.data);
+			//console.log("res data: ", res.data);
 			//console.log("response", res);
 			if(Array.isArray(res.data) && typeof res.data !== "string") {
 				$scope.error = "";
@@ -336,7 +336,7 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			temp.pUpdate = moment(res.data.updated_on).format(prettyDate);
 			temp.fUpdate = moment(res.data.updated_on).format(fullDate);
 
-			console.log("Post notes push", res.data);
+			//console.log("Post notes push", res.data);
 			$scope.notes.push(res.data);
 		}, function (res) {
 			//console.log(res.responseText);
@@ -345,6 +345,48 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				$scope.error = "";
 			}, 3000);
 		});
+	};
+
+	$scope.deleteNote = function(index, note_id, title) {
+		//$http.delete('/notes', {user_id: authService.getUserId(), note_id: note_id}).then(function (res) {
+		//	$scope.notes.splice(index, 1);
+		//	// flash success message to user, then remove after 3 seconds
+		//	$scope.success = "Successfully deleted "+ title;
+		//	$timeout(function () {
+		//		$scope.success = "";
+		//	}, 3000);
+		//
+		//}, function (res) {
+		//	// flash fail message, remove after 3 seconds
+		//	$scope.error = "Failed to delete "+ title;
+		//	$timeout(function () {
+		//		$scope.error = "";
+		//	}, 3000);
+		//});
+		$http({
+			url: '/notes',
+			method: 'DELETE',
+			data: {
+				user_id: authService.getUserId(),
+				note_id: note_id
+			},
+			//type: 'json'
+			headers: {"Content-Type": "application/json;charset=utf-8"}
+		}).then(function (res) {
+			$scope.notes.splice(index, 1);
+			// flash success message to user, then remove after 3 seconds
+			$scope.success = "Successfully deleted "+ title;
+			$timeout(function () {
+				$scope.success = "";
+			}, 3000);
+
+		}, function (res) {
+			// flash fail message, remove after 3 seconds
+			$scope.error = "Failed to delete "+ title;
+			$timeout(function () {
+				$scope.error = "";
+			}, 3000);
+		})
 	};
 }]);
 

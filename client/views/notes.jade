@@ -47,7 +47,7 @@ table
             th.center Delete
         tr.task(ng-show="status !== false")
             td.center(colspan="8") {{ status }}
-        tr.task(ng-repeat="note in notes")
+        tr.task(ng-repeat="note in notes" data-id="{{ note._id }}")
             td.center {{ note.title }}
             td.center {{ note.text }}
             td.center(title="{{ note.fCreate }}") {{ note.pCreate }}
@@ -57,4 +57,4 @@ table
             td.center {{ note.tags }}
             td.center {{ note.task }}
             td.center
-                button(data-id="{{ note._id }}") X
+                button(data-id="{{ note._id }}" ng-click="deleteNote($index, note._id, note.title)") X

@@ -65,7 +65,7 @@ router.post('/', function(req, res, next) {
 	}
 });
 
-router.put('/read_only/', function (req, res, next) {
+router.put('/read_only', function (req, res, next) {
 	if(req.body.user_id === undefined || !req.body.user_id.length) {
 		res.status(400).send("No user sent.");
 	}else if(req.body.task_id === undefined) {
@@ -92,13 +92,13 @@ router.put('/read_only/', function (req, res, next) {
 	}
 });
 
-router.put('/end/', function (req, res, next) {
+router.put('/end', function (req, res, next) {
 	if(req.body.user_id === undefined || !req.body.user_id.length) {
 		res.status(400).send("No user sent.");
 	}else if(req.body.task_id === undefined) {
 		res.status(400).send("No task sent.");
 	}else {
-		console.log("passed tests", req.body);
+		//console.log("passed tests", req.body);
 		User.findOneAndUpdate(
 			{"_id": req.body.user_id, "tasks._id" : req.body.task_id},
 			{

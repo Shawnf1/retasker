@@ -83,4 +83,27 @@ router.post('/', function(req, res, next) {
 	}
 });
 
+router.delete('/', function (req, res, next) {
+	//console.log("req", req.body);
+	if(req.body.user_id === undefined || !req.body.user_id) {
+		res.status(400).send("No user sent.");
+	}else if(req.body.note_id === undefined) {
+		res.status(400).send("No note sent.");
+	}else {
+		User.findOneAndUpdate({_id: req.body.user_id},
+		{
+			$pull: { notes: {_id: req.body.note_id } }
+		},
+		function (err, user) {
+			if(err) {
+				console.log(err, err.message);
+				res.status(400).send(err.message);
+			}else {
+				//console.log("successfully updated ", req.body.task_id, " to ", req.body.read_only);
+				res.status(200).send("Successfully deleted note.");
+			}
+		});
+	}
+});
+
 module.exports = router;
