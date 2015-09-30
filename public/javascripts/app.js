@@ -224,6 +224,17 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			$scope.error = res.responseText;
 		});
 	};
+
+	$scope.updateReadOnly = function (task_id, status, title) {
+		$http.put('/tasks', {user_id: authService.getUserId(), task: task_id, read_only: status}).then(function (res) {
+			// flash success message to user, then remove after 3 seconds
+			$scope.success = "Successfully updated "+ title +" read only status to "+ status;
+			$timeout(function () {
+				$scope.success = "";
+			}, 3000);
+
+		});
+	};
 }]);
 
 app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', function($scope, $rootScope, authService, $http){
