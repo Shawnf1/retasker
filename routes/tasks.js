@@ -65,7 +65,7 @@ router.post('/', function(req, res, next) {
 	}
 });
 
-router.put('/', function (req, res, next) {
+router.put('/read_only/', function (req, res, next) {
 	if(req.body.user_id === undefined || !req.body.user_id.length) {
 		res.status(400).send("No user sent.");
 	}else if(req.body.task_id === undefined) {
@@ -87,6 +87,31 @@ router.put('/', function (req, res, next) {
 				}else {
 					//console.log("successfully updated ", req.body.task_id, " to ", req.body.read_only);
 					res.status(200).send(req.body.read_only);
+				}
+		});
+	}
+});
+
+router.put('/end/', function (req, res, next) {
+	if(req.body.user_id === undefined || !req.body.user_id.length) {
+		res.status(400).send("No user sent.");
+	}else if(req.body.task_id === undefined) {
+		res.status(400).send("No task sent.");
+	}else {
+		console.log("passed tests", req.body);
+		User.findOneAndUpdate(
+			{"_id": req.body.user_id, "tasks._id" : req.body.task_id},
+			{
+				"$set": {
+					"tasks.$.end_date": new Date()
+				}
+			}, function (err, user) {
+				if(err) {
+					console.log(err, err.message);
+					res.status(400).send(err.message);
+				}else {
+					//console.log("successfully updated ", req.body.task_id, " to ", req.body.read_only);
+					res.status(200).send(new Date());
 				}
 		});
 	}

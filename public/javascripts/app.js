@@ -226,17 +226,40 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	};
 
 	$scope.updateReadOnly = function ($index, task_id, status, title) {
-		$http.put('/tasks', {user_id: authService.getUserId(), task_id: task_id, read_only: status}).then(function (res) {
+		$http.put('/tasks/read_only', {user_id: authService.getUserId(), task_id: task_id, read_only: status}).then(function (res) {
 			// flash success message to user, then remove after 3 seconds
-			$scope.success = "Successfully updated "+ title +" read only status to "+ status;
+			$scope.success = "Successfully updated '"+ title +"' read only status to "+ status;
 			$timeout(function () {
 				$scope.success = "";
 			}, 3000);
 
 		}, function (res) {
-			console.log("failed", !status, "index", $index);
-			//$event.target.attr("checked", !status);
+			$scope.error = "Failed to update '"+ title +"' read only status to "+ status;
+			$timeout(function () {
+				$scope.error = "";
+			}, 3000);
 			$scope.tasks[$index].read_only = !status;
+		});
+	};
+
+	$scope.endTask = function ($index, task_id, title) {
+		$http.put('/tasks/end', {user_id: authService.getUserId(), task_id: task_id}).then(function (res) {
+			$scope.tasks[$index].pEnd = moment(res.data).format(prettyDate);
+			$scope.tasks[$index].fEnd = moment(res.data).format(fullDate);
+			// flash success message to user, then remove after 3 seconds
+			$scope.success = "Successfully ended "+ title;
+			$timeout(function () {
+				$scope.success = "";
+			}, 3000);
+
+		}, function (res) {
+			//console.log("failed", !status, "index", $index);
+			//$event.target.attr("checked", !status);
+			//$scope.tasks[$index].read_only = !status;
+			$scope.error = "Failed to end "+ title;
+			$timeout(function () {
+				$scope.error = "";
+			}, 3000);
 		});
 	};
 }]);
