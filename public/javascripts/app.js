@@ -82,6 +82,7 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 }]);
 
 app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$timeout', function($scope, $rootScope, authService, $http, $timeout){
+	$scope.status = false;
 	$rootScope.user = authService.getUser();
 	var prettyDate = "MM/DD/YYYY";
 	var fullDate = "MM/DD/YYYY h:mm:ss a";
@@ -138,7 +139,9 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 		$http.get('/tasks', {params: {user_id: authService.getUserId()}}).then(function (res) {
 			//console.log("res data: ", res.data);
 			$scope.header = "Tasks";
-			if(res.data.length) {
+			if(Array.isArray(res.data) && typeof res.data !== "string") {
+				$scope.error = "";
+				$scope.status = false;
 				$scope.tasks = res.data;
 				$scope.tasks.forEach(function (v, i, a) {
 					// for each of the dates in an object, creating a pretty format (shrunk to date only) and full (with time)
@@ -156,6 +159,12 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 						a[i].fEnd = moment(a[i].end_date).format(fullDate);
 					}
 				});
+			} else if(typeof res.data === "string") {
+				if(res.data == "No tasks created.") {
+					$scope.status = res.data;
+				}else {
+					$scope.error = res.data;
+				}
 			}
 			//console.log("updated", $scope.tasks);
 		});
@@ -205,7 +214,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 }]);
 
 app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', function($scope, $rootScope, authService, $http){
-	$scope.error = false;
+	$scope.status = false;
 	$scope.header = "Notes";
 	$rootScope.user = authService.getUser();
 	var prettyDate = "MM/DD/YYYY";
@@ -217,7 +226,8 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', func
 			console.log("res data: ", res.data);
 			//console.log("response", res);
 			if(Array.isArray(res.data) && typeof res.data !== "string") {
-				$scope.error = false;
+				$scope.error = "";
+				$scope.status = false;
 				$scope.notes = res.data;
 				$scope.notes.forEach(function (v, i, a) {
 					// for each of the dates in an object, creating a pretty format (shrunk to date only) and full (with time)
@@ -230,8 +240,13 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', func
 				//console.log("updated", $scope.tasks);
 			}else if(typeof res.data === "string") {
 				// show error message if don't receive an array back
-				console.log("logging data", res.data);
-				$scope.error = res.data;
+				//console.log("logging data", res.data);
+
+				if(res.data == "No notes created.") {
+					$scope.status = res.data;
+				}else {
+					$scope.error = res.data;
+				}
 
 				//console.log("end note.show -> get");
 			}

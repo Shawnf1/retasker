@@ -53,6 +53,8 @@ table
             th.center Read Only
             th.center Tags
             th.center End
+            tr.task(ng-show="status !== false")
+                td.center(colspan="12") {{ status }}
         tr.task(ng-repeat="task in tasks")
             td.center {{ task.title }}
             td.center {{ task.desc }}

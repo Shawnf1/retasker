@@ -14,9 +14,9 @@
                 .form-group.col-xs-12.col-md-2
                     label(for="title") Note Name:
                     input.form-control(required="true" ng-model="title" highlight-matched-text=false select-first-match=false)
-                .form-group.col-xs-12.col-md-2.top-buffer(ng-controller="tagCtrl")
-                    label(for="tags") Tags:
-                    div#tags(auto-complete url="/tags" model="tags")
+                //.form-group.col-xs-12.col-md-2.top-buffer(ng-controller="tagCtrl")
+                //    label(for="tags") Tags:
+                //    div#tags(auto-complete url="/tags" model="tags")
             .row
                 .form-group.col-xs-12.col-md-4
                     label(for="desc") Description:
@@ -45,8 +45,8 @@ table
             th.center Tags
             th.center Task
             th.center Delete
-        tr.task(ng-show="error !== false")
-            td.center(colspan="8") {{ error }}
+        tr.task(ng-show="status !== false")
+            td.center(colspan="8") {{ status }}
         tr.task(ng-repeat="note in notes")
             td.center {{ note.title }}
             td.center {{ note.desc }}
