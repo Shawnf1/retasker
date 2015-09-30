@@ -58,7 +58,7 @@ router.post('/', function(req, res, next) {
 					console.log(err, err.message);
 					res.status(400).send(err.message);
 				} else {
-					res.status(200).send("Successfully inserted new task.");
+					res.status(200).json(user.tasks[user.tasks.length - 1]);
 				}
 			});
 		});

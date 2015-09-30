@@ -145,7 +145,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				$scope.tasks = res.data;
 				$scope.tasks.forEach(function (v, i, a) {
 					// for each of the dates in an object, creating a pretty format (shrunk to date only) and full (with time)
-					a[i].pCreate = moment(a[i].created_on).format('MM/DD/YYYY');
+					a[i].pCreate = moment(a[i].created_on).format(prettyDate);
 					a[i].fCreate = moment(a[i].created_on).format(fullDate);
 
 					a[i].pUpdate = moment(a[i].updated_on).format(prettyDate);
@@ -200,11 +200,25 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 		};
 		//var user = authService.getUserId();
 		$http.post('/tasks', {user_id: authService.getUserId(), task: task}).then(function (res) {
-			$scope.success = res.responseText;
+			$scope.success = "Successfully inserted task.";
+			var temp = res.data;
+			temp.pCreate = moment(temp.created_on).format(prettyDate);
+			temp.fCreate = moment(temp.created_on).format(fullDate);
+
+			temp.pUpdate = moment(temp.updated_on).format(prettyDate);
+			temp.fUpdate = moment(temp.updated_on).format(fullDate);
+
+			temp.pStart = moment(temp.start_date).format(prettyDate);
+			temp.fStart = moment(temp.start_date).format(fullDate);
+
+			if(temp.end_date) {
+				temp.pEnd = moment(temp.end_date).format(prettyDate);
+				temp.fEnd = moment(temp.end_date).format(fullDate);
+			}
+			$scope.tasks.push(temp);
 			$timeout(function () {
 				$scope.success = "";
 			}, 3000);
-			$scope.tasks.push(res.data);
 		}, function (res) {
 			//console.log(res.responseText);
 			$scope.error = res.responseText;
