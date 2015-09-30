@@ -264,7 +264,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	};
 }]);
 
-app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', function($scope, $rootScope, authService, $http){
+app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$timeout', function($scope, $rootScope, authService, $http, $timeout){
 	$scope.status = false;
 	$scope.header = "Notes";
 	$rootScope.user = authService.getUser();
@@ -320,21 +320,30 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', func
 	$scope.addNote = function () {
 		var note = {
 			title: $scope.title,
-			desc: $scope.desc,
+			text: $scope.text,
 			tag: $scope.tagsArray,
 			read_only: $scope.read_only,
 			task: $scope.task
 		};
 		$http.post('/notes', {user_id: authService.getUserId(), note: note}).then(function (res) {
-			$scope.success = res.responseText;
+			$scope.success = "Successfully added note.";
 			$timeout(function () {
 				$scope.success = "";
 			}, 3000);
+			var temp = res.data;
+			temp.pCreate = moment(res.data.created_on).format(prettyDate);
+			temp.fCreate = moment(res.data.created_on).format(fullDate);
+			temp.pUpdate = moment(res.data.updated_on).format(prettyDate);
+			temp.fUpdate = moment(res.data.updated_on).format(fullDate);
+
 			console.log("Post notes push", res.data);
-			//$scope.notes.push(res.data);
+			$scope.notes.push(res.data);
 		}, function (res) {
 			//console.log(res.responseText);
 			$scope.error = res.responseText;
+			$timeout(function () {
+				$scope.error = "";
+			}, 3000);
 		});
 	};
 }]);

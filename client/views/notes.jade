@@ -19,8 +19,8 @@
                 //    div#tags(auto-complete url="/tags" model="tags")
             .row
                 .form-group.col-xs-12.col-md-4
-                    label(for="desc") Description:
-                    textarea#desc.form-control(ng-model="desc")
+                    label(for="text") Text:
+                    textarea#text.form-control(ng-model="text")
 
                 .form-group.col-xs-12.col-md-2
                     label
@@ -38,7 +38,7 @@ table
             th.center.header(colspan="8") {{ header }}
         tr
             th.center Title
-            th.center Description
+            th.center Text
             th.center Created
             th.center Updated
             th.center Read Only
@@ -49,7 +49,7 @@ table
             td.center(colspan="8") {{ status }}
         tr.task(ng-repeat="note in notes")
             td.center {{ note.title }}
-            td.center {{ note.desc }}
+            td.center {{ note.text }}
             td.center(title="{{ note.fCreate }}") {{ note.pCreate }}
             td.center(title="{{ note.fUpdate }}") {{ note.pUpdate }}
             td.center

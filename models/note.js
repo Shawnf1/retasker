@@ -5,7 +5,7 @@ var Task = require('./task.js').Schema;
 
 var NoteSchema = new Schema({
 	title: String,
-	note: {type: String, required: true},
+	text: {type: String, required: true},
 	created_on: Date,
 	updated_on: Date,
 	read_only: {type: Boolean, default: false},
