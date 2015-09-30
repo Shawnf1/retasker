@@ -65,7 +65,7 @@ table
             td.center {{ task.repetitions }}
             td.center(title="{{ task.fEnd }}") {{ task.pEnd ? task.pEnd : "-" }}
             td.center
-                input(type="checkbox" ng-model="task.read_only" ng-checked="task.read_only" ng-change="updateReadOnly(task._id, task.read_only, task.title)")
+                input(type="checkbox" ng-model="task.read_only" ng-checked="task.read_only" ng-change="updateReadOnly($index, task._id, task.read_only, task.title)")
             td.center {{ task.tags }}
             td.center
                 button(data-id="{{ task._id }}") X
