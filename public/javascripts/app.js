@@ -138,23 +138,25 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 		$http.get('/tasks', {params: {user_id: authService.getUserId()}}).then(function (res) {
 			//console.log("res data: ", res.data);
 			$scope.header = "Tasks";
-			$scope.tasks = res.data;
-			$scope.tasks.forEach(function (v, i, a) {
-				// for each of the dates in an object, creating a pretty format (shrunk to date only) and full (with time)
-				a[i].pCreate = moment(a[i].created_on).format(prettyDate);
-				a[i].fCreate = moment(a[i].created_on).format(fullDate);
+			if(res.data.length) {
+				$scope.tasks = res.data;
+				$scope.tasks.forEach(function (v, i, a) {
+					// for each of the dates in an object, creating a pretty format (shrunk to date only) and full (with time)
+					a[i].pCreate = moment(a[i].created_on).format(prettyDate);
+					a[i].fCreate = moment(a[i].created_on).format(fullDate);
 
-				a[i].pUpdate = moment(a[i].updated_on).format(prettyDate);
-				a[i].fUpdate = moment(a[i].updated_on).format(fullDate);
+					a[i].pUpdate = moment(a[i].updated_on).format(prettyDate);
+					a[i].fUpdate = moment(a[i].updated_on).format(fullDate);
 
-				a[i].pStart = moment(a[i].start_date).format(prettyDate);
-				a[i].fStart = moment(a[i].start_date).format(fullDate);
+					a[i].pStart = moment(a[i].start_date).format(prettyDate);
+					a[i].fStart = moment(a[i].start_date).format(fullDate);
 
-				if(a[i].end_date) {
-					a[i].pEnd = moment(a[i].end_date).format(prettyDate);
-					a[i].fEnd = moment(a[i].end_date).format(fullDate);
-				}
-			});
+					if(a[i].end_date) {
+						a[i].pEnd = moment(a[i].end_date).format(prettyDate);
+						a[i].fEnd = moment(a[i].end_date).format(fullDate);
+					}
+				});
+			}
 			//console.log("updated", $scope.tasks);
 		});
 	};
@@ -203,6 +205,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 }]);
 
 app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', function($scope, $rootScope, authService, $http){
+	$scope.error = false;
 	$scope.header = "Notes";
 	$rootScope.user = authService.getUser();
 	var prettyDate = "MM/DD/YYYY";
@@ -211,13 +214,10 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', func
 	$scope.show = function () {
 		//console.log("user_id", authService.getUserId());
 		$http.get('/notes', {params: {user_id: authService.getUserId()}}).then(function (res) {
-			//console.log("res data: ", res.data);
+			console.log("res data: ", res.data);
 			//console.log("response", res);
-			if(res.data == "No notes created.") {
-				// show error message if don't receive an array back
-				//console.log("logging data", res.data);
-				$scope.error = res.data;
-			}else {
+			if(Array.isArray(res.data) && typeof res.data !== "string") {
+				$scope.error = false;
 				$scope.notes = res.data;
 				$scope.notes.forEach(function (v, i, a) {
 					// for each of the dates in an object, creating a pretty format (shrunk to date only) and full (with time)
@@ -228,8 +228,13 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', func
 					a[i].fUpdate = moment(a[i].updated_on).format(fullDate);
 				});
 				//console.log("updated", $scope.tasks);
+			}else if(typeof res.data === "string") {
+				// show error message if don't receive an array back
+				console.log("logging data", res.data);
+				$scope.error = res.data;
+
+				//console.log("end note.show -> get");
 			}
-			//console.log("end note.show -> get");
 		});
 		//console.log("End note.show");
 	};

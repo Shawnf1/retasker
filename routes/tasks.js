@@ -14,7 +14,7 @@ router.get('/', function(req, res, next){
 		}
 		// if the array is empty, display nothing
 		if(user.tasks.length == 0) {
-			res.send('No tasks created.');
+			res.status(200).send('No tasks created.');
 		}else {
 			// send back tasks array as json
 			res.status(200).json(user.tasks);

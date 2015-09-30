@@ -12,9 +12,10 @@ router.get('/', function(req, res, next){
 		if(err) {
 			res.status(400).send(err.message);
 		}
+
 		// if the array is empty, display nothing
 		if(user.notes.length == 0) {
-			res.status(400).send('No notes created.');
+			res.status(200).send('No notes created.');
 		}else {
 			// send back tasks array as json
 			res.status(200).json(user.notes);

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var User = require('../models/user');
+var User = require('../models/user').Model;
 
 // auth
 router.post('/', function (req, res, next) {

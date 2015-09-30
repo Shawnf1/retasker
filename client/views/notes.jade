@@ -45,6 +45,8 @@ table
             th.center Tags
             th.center Task
             th.center Delete
+        tr.task(ng-show="error !== false")
+            td.center(colspan="8") {{ error }}
         tr.task(ng-repeat="note in notes")
             td.center {{ note.title }}
             td.center {{ note.desc }}
