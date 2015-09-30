@@ -34,8 +34,14 @@ router.post('/', function(req, res, next) {
 		var user_id = req.body.user_id;
 		// clear out the start_date property if not set, model will update that
 		if (temp.start_date == null || temp.start_date === "undefined") {
-			delete temp["start_date"];
+			temp.start_date = new Date();
 		}
+		temp.created_on = new Date();
+		temp.updated_on = new Date();
+
+		// need empty tags array until get that added in
+		temp.tags = [];
+
 		var task = new Task(temp);
 
 		// insert task to user, complete with tag ids array

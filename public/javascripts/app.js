@@ -145,7 +145,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				$scope.tasks = res.data;
 				$scope.tasks.forEach(function (v, i, a) {
 					// for each of the dates in an object, creating a pretty format (shrunk to date only) and full (with time)
-					a[i].pCreate = moment(a[i].created_on).format(prettyDate);
+					a[i].pCreate = moment(a[i].created_on).format('MM/DD/YYYY');
 					a[i].fCreate = moment(a[i].created_on).format(fullDate);
 
 					a[i].pUpdate = moment(a[i].updated_on).format(prettyDate);
@@ -196,8 +196,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			frequency: $scope.freq,
 			start_date: $scope.start,
 			repetitions: $scope.reps,
-			read_only: $scope.read_only,
-			tags: [{title: "Tasks 1"}, {title: "Tasks 2"}]
+			read_only: $scope.read_only
 		};
 		//var user = authService.getUserId();
 		$http.post('/tasks', {user_id: authService.getUserId(), task: task}).then(function (res) {

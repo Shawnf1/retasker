@@ -25,7 +25,7 @@ var TagSchema = new Schema({
 // for processing tags in any note/task, just need to call Tag.processTags and will strip out tags, insert any and return tag ids
 // takes in user_id, tags, callback, response
 TagSchema.statics.processTags = function processTags (user_id, tags, cb) {
-	console.log("processtags", user_id, tags);
+	//console.log("processtags", user_id, tags);
 	var User = mongoose.model('User');
 	// for holding tags to be inserted
 	var temp = [];
