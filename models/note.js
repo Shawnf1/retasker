@@ -7,7 +7,7 @@ var NoteSchema = new Schema({
 	title: String,
 	text: {type: String, required: true},
 	created_on: Date,
-	updated_on: Date,
+	iteration: Date,
 	read_only: {type: Boolean, default: false},
 	tags: [{type: Schema.ObjectId, ref: 'Tag'}],
 	task_link: {type: mongoose.Schema.ObjectId, ref: 'Task'}
@@ -22,7 +22,7 @@ NoteSchema.pre('save', function(next) {
 		note.created_on = new Date();
 	}
 
-	note.updated_on = new Date();
+	note.iteration = new Date();
 	console.log("final before saving\n", note);
 
 	next();

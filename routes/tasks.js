@@ -33,8 +33,8 @@ router.post('/', function(req, res, next) {
 		// get user id for queries
 		var user_id = req.body.user_id;
 		// clear out the start_date property if not set, model will update that
-		if (temp.start_date == null || temp.start_date === "undefined") {
-			temp.start_date = new Date();
+		if (temp.iteration == null || temp.iteration === "undefined") {
+			temp.iteration = new Date();
 		}
 		temp.created_on = new Date();
 		temp.updated_on = new Date();

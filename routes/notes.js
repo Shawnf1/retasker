@@ -39,7 +39,9 @@ router.post('/', function(req, res, next) {
 		temp.updated_on = new Date();
 		temp.tags = [];
 		//console.log("temp", temp);
-
+		if (temp.iteration == null || temp.iteration === "undefined") {
+			temp.iteration = new Date();
+		}
 		var note = new Note(temp);
 		//console.log("note", note);
 		// insert task to user, complete with tag ids array

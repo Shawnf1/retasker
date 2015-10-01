@@ -189,7 +189,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	}
 	$duration = $('#duration');
 	$scope.$watch('reps', function (newValue, oldValue) {
-		console.log('watch fired, new value: ', newValue);
+		//console.log('watch fired, new value: ', newValue);
 		switch(newValue.value) {
 			case "indef":
 				$duration.attr({
@@ -361,8 +361,8 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			var temp = res.data;
 			temp.pCreate = moment(res.data.created_on).format(prettyDate);
 			temp.fCreate = moment(res.data.created_on).format(fullDate);
-			temp.pUpdate = moment(res.data.updated_on).format(prettyDate);
-			temp.fUpdate = moment(res.data.updated_on).format(fullDate);
+			temp.pIteration = moment(res.data.iteration).format(prettyDate);
+			temp.fIteration = moment(res.data.iteration).format(fullDate);
 
 			//console.log("Post notes push", res.data);
 			$scope.notes.push(res.data);
