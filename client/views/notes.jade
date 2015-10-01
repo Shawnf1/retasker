@@ -27,8 +27,11 @@
             .row
                 .form-group.col-xs-12.col-md-4
                     label(for="text") Text:
+                    br
                     textarea#text.form-control(ng-model="text")
-
+                .form-group.col-xs-12.col-md-3
+                    label(for="tasks") Tasks:
+                    select#tasks.form-control(ng-init="tasks = taskOptions[0]" ng-model="tasks" ng-options="task.text for task in taskOptions track by task.value")
                 .form-group.col-xs-12.col-md-2
                     label
                         input#read_only.form-control(type="checkbox" ng-model="read_only")

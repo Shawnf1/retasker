@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var Tag = require('./tag.js').Schema;
 var Task = require('./task.js').Schema;
+var User = require('./user.js').Schema;
 
 var NoteSchema = new Schema({
 	title: String,
@@ -11,7 +12,7 @@ var NoteSchema = new Schema({
 	read_only: {type: Boolean, default: false},
 	sticky: {type: Boolean, default: false},
 	tags: [{type: Schema.ObjectId, ref: 'Tag'}],
-	task_link: {type: mongoose.Schema.ObjectId, ref: 'Task'}
+	task: {type: Schema.ObjectId, ref: 'User.tasks'}
 });
 
 NoteSchema.pre('save', function(next) {

@@ -336,6 +336,21 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			}
 		});
 		//console.log("End note.show");
+		// get tasks into select box
+		$http.get('/tasks', {params: {user_id: authService.getUserId()}}).then(function (res) {
+			var $tasks = $('#tasks');
+			$scope.taskOptions = [ { text: "Select a task (opt)" }];
+			// if returned array of tasks
+			if(Array.isArray(res.data) && typeof res.data !== "string") {
+				res.data.forEach(function (v, i, a) {
+					$scope.taskOptions.push({ value: v._id, text: v.title});
+				});
+				//$scope.tasOptions.push(res.)
+			}else {
+				$tasks.prop('disabled', true);
+			}
+			console.log("tasks", $scope.taskOptions);
+		});
 	};
 	if(authService.isAuthed()) {
 		$scope.message = "Here are your Notes!";
@@ -356,7 +371,7 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			text: $scope.text,
 			tag: $scope.tagsArray,
 			read_only: $('#read_only').is(':checked'),
-			task: $scope.task,
+			task: $scope.tasks.value,
 			iteration: $scope.date,
 			sticky: ($scope.sticky) ? true : false
 		};
