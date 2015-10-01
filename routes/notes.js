@@ -25,7 +25,11 @@ router.get('/:id?', function(req, res, next){
 						temp.push(v);
 					}
 				});
-				res.status(200).json(temp);
+				if(temp.length == 0) {
+					res.status(200).send('No notes created.');
+				}else {
+					res.status(200).json(temp);
+				}
 			}else {
 				// send back notes array as json
 				res.status(200).json(user.notes);

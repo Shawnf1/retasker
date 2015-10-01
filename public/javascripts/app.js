@@ -81,6 +81,7 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 	$rootScope.user = authService.getUser();
 	var prettyDate = "MM/DD/YYYY";
 	$scope.taskStatus = false;
+	//$scope.status = false;
 	//$scope.selected.status = false;
 	if(authService.isAuthed()) {
 		$scope.message = "Welcome Home!";
@@ -115,6 +116,8 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 	}
 
 	$scope.showTask = function (task, event) {
+		$('#tasks .selected').removeClass('selected');
+
 		$(event.target).parent().addClass("selected");
 		var temp = task;
 		
@@ -142,6 +145,7 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 		$http.get('/notes', {params: {user_id: authService.getUserId(), task_id: task_id}}).then(function (res) {
 			//console.log("res data: ", res.data);
 			//console.log("response", res);
+			//console.log($scope.selected.status);
 			$scope.notes = [];
 			if(Array.isArray(res.data) && typeof res.data !== "string") {
 				$scope.error = "";
@@ -152,33 +156,31 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 					var tempDate = formatDates(v.created_on);
 					a[i].pCreate = tempDate.pretty;
 					a[i].fCreate = tempDate.full;
-					//v.pCreate = moment(v.created_on).format(prettyDate);
-					//v.fCreate = moment(v.created_on).format(fullDate);
-
 					if(v.sticky) {
 						v.pIteration = "-";
 						v.fIteration = "No date for sticky items!";
 					}else {
-						temp = formatDates(v.iteration);
+						tempDate = formatDates(v.iteration);
 						a[i].pIteration = temp.pretty;
 						a[i].fIteration = temp.pretty;
-
-						//v.pIteration = moment(v.iteration).format(prettyDate);
-						//v.fIteration = moment(v.iteration).format(fullDate);
 					}
 				});
+				$scope.selected.Notestatus = true;
 				$scope.notes = temp;
+				//console.log("Notes", temp.length, temp);
 				//console.log("updated", $scope.tasks);
 			}else if(typeof res.data === "string") {
 				// show error message if don't receive an array back
 				//console.log("logging data", res.data);
-
+				$scope.selected.Notestatus = false;
 				if(res.data == "No notes created.") {
-					$scope.status = res.data;
+					//$scope.selected.status = true;
+					//$scope.selected.noteStatus = false;
+					$scope.selected.length = res.data;
 				}else {
+					//$scope.selected.Notestatus = false;
 					$scope.error = res.data;
 				}
-
 				//console.log("end note.show -> get");
 			}
 		}, function (res) {
