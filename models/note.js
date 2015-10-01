@@ -9,6 +9,7 @@ var NoteSchema = new Schema({
 	created_on: Date,
 	iteration: Date,
 	read_only: {type: Boolean, default: false},
+	sticky: {type: Boolean, default: false},
 	tags: [{type: Schema.ObjectId, ref: 'Tag'}],
 	task_link: {type: mongoose.Schema.ObjectId, ref: 'Task'}
 });

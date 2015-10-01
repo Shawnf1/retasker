@@ -310,11 +310,16 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				$scope.notes = res.data;
 				$scope.notes.forEach(function (v, i, a) {
 					// for each of the dates in an object, creating a pretty format (shrunk to date only) and full (with time)
-					a[i].pCreate = moment(a[i].created_on).format(prettyDate);
-					a[i].fCreate = moment(a[i].created_on).format(fullDate);
+					v.pCreate = moment(v.created_on).format(prettyDate);
+					v.fCreate = moment(v.created_on).format(fullDate);
 
-					a[i].pUpdate = moment(a[i].updated_on).format(prettyDate);
-					a[i].fUpdate = moment(a[i].updated_on).format(fullDate);
+					if(v.sticky) {
+						v.pIteration = "-";
+						v.fIteration = "No date for sticky items!";
+					}else {
+						v.pIteration = moment(v.iteration).format(prettyDate);
+						v.fIteration = moment(v.iteration).format(fullDate);
+					}
 				});
 				//console.log("updated", $scope.tasks);
 			}else if(typeof res.data === "string") {
@@ -350,9 +355,12 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			title: $scope.title,
 			text: $scope.text,
 			tag: $scope.tagsArray,
-			read_only: $scope.read_only,
-			task: $scope.task
+			read_only: $('#read_only').is(':checked'),
+			task: $scope.task,
+			iteration: $scope.date,
+			sticky: ($scope.sticky) ? true : false
 		};
+		console.log($scope.read_only);
 		$http.post('/notes', {user_id: authService.getUserId(), note: note}).then(function (res) {
 			$scope.success = "Successfully added note.";
 			$timeout(function () {
@@ -361,8 +369,13 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			var temp = res.data;
 			temp.pCreate = moment(res.data.created_on).format(prettyDate);
 			temp.fCreate = moment(res.data.created_on).format(fullDate);
-			temp.pIteration = moment(res.data.iteration).format(prettyDate);
-			temp.fIteration = moment(res.data.iteration).format(fullDate);
+			if(temp.sticky) {
+				temp.pIteration = "-";
+				temp.fIteration = "No date for sticky items!";
+			}else {
+				temp.pIteration = moment(temp.iteration).format(prettyDate);
+				temp.fIteration = moment(temp.iteration).format(fullDate);
+			}
 
 			//console.log("Post notes push", res.data);
 			$scope.notes.push(res.data);
@@ -400,6 +413,19 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			}, 3000);
 		})
 	};
+
+	var $date = $('#date');
+	var $readOnly = $('#read_only');
+	$scope.$watch('sticky', function (newValue, oldValue) {
+		// if checked, disable iteration date
+		if(newValue) {
+			$date.attr("disabled", true);
+			$readOnly.prop("checked", true);
+		}else {
+			$date.attr("disabled", false);
+			$readOnly.prop("checked", true);
+		}
+	});
 }]);
 
 app.controller('registerCtrl', ['$scope', '$http', '$location', '$interval', '$timeout', function($scope, $http, $location, $interval, $timeout){

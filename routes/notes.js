@@ -38,9 +38,15 @@ router.post('/', function(req, res, next) {
 		temp.created_on = new Date();
 		temp.updated_on = new Date();
 		temp.tags = [];
-		//console.log("temp", temp);
-		if (temp.iteration == null || temp.iteration === "undefined") {
-			temp.iteration = new Date();
+
+		// if set as sticky, doesn't have iteration date associated with it
+		if(temp.sticky) {
+			temp.iteration = null;
+		}else {
+			// if not sticky, needs date. if none, then assume current date
+			if (temp.iteration == null || temp.iteration === "undefined") {
+				temp.iteration = new Date();
+			}
 		}
 		var note = new Note(temp);
 		//console.log("note", note);
