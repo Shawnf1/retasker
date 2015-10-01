@@ -84,6 +84,8 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$timeout', function($scope, $rootScope, authService, $http, $timeout){
 	$scope.status = false;
 	$rootScope.user = authService.getUser();
+	$scope.freq = "";
+	$scope.reps = "";
 	var prettyDate = "MM/DD/YYYY";
 	var fullDate = "MM/DD/YYYY h:mm:ss a";
 	$scope.freqOptions =
@@ -137,6 +139,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				text: "End Date"
 			}
 		];
+
 
 	$scope.show = function () {
 		//console.log("user_id", authService.getUserId());
@@ -198,7 +201,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			repetitions: $scope.reps.text,
 			read_only: ($scope.read_only) ? true : false
 		};
-		console.log("task", task);
+		console.log("task", task, $scope.start);
 	// commented out while testing
 		//$http.post('/tasks', {user_id: authService.getUserId(), task: task}).then(function (res) {
 		//	$scope.success = "Successfully inserted task.";

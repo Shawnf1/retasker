@@ -18,15 +18,15 @@
 
                 .form-group.col-xs-12.col-md-2
                     label(for="freq_slct") Frequency:
-                    select#freq_slct.form-control(ng-init="freq = freqOptions[0]" ng-model="freq" ng-options="o.value as o.text for o in freqOptions track by o.value" required="true")
+                    select#freq_slct.form-control(ng-init="freq = freqOptions[0]" ng-model="freq" ng-options="freq.text for freq in freqOptions track by freq.value" required="true")
 
                 .form-group.col-xs-12.col-md-2
                     label(for="start") Start Date:
-                    input#start.form-control(type="date" ng-model="start" placeholder="MM/DD/YYYY")
+                    input#start.form-control(ng-model="start" placeholder="MM/DD/YYYY")
             .row
                 .form-group.col-xs-12.col-md-5
                     label(for="reps_slct") Repetitions:
-                    select#reps_slct.form-control(ng-init="reps = repOptions[0]" ng-model="reps" ng-options="o.value as o.text for o in repOptions track by o.value")
+                    select#reps_slct.form-control(ng-init="reps = repOptions[0]" ng-model="reps" ng-options="rep.text for rep in repOptions track by rep.value")
                     input#reps(placeholder="Repetitions value")
 
                 .form-group.col-xs-12.col-md-2
