@@ -8,8 +8,10 @@
 .container-well
     .row
         .col-xs-6.col-sm-2
-            | Sort By:
+            label(for="tasks") Sort By:
             select#tasks.form-control(ng-init="taskSort = sortOptions[0]" ng-model="taskSort" ng-options="sort.text for sort in sortOptions track by sort.value")
+            label(for="filter") Filter:
+            input#filter.form-control(ng-model="filter")
     .row
         .col-xs-6
             //span.center Tasks
@@ -26,7 +28,7 @@
                     tr.task(ng-show="taskStatus !== false")
                         td.center(colspan="3") {{ taskStatus }}
                     //tr.task(ng-repeat="task in tasks | orderBy: '{{ taskSort.value }}'" data-id="{{ task._id }}" ng-click="showTask(task, $event)")
-                    tr.task(ng-repeat="task in tasks | orderBy: taskOrder" data-id="{{ task._id }}" ng-click="showTask(task, $event)")
+                    tr.task(ng-repeat="task in tasks | filter: {title: filter} | orderBy: taskOrder" data-id="{{ task._id }}" ng-click="showTask(task, $event)")
                         td.center {{ task.title }}
                         td.center {{ task.frequency }}
                         td.center {{ task.pStart }}
