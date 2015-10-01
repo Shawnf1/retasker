@@ -519,6 +519,23 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 		});
 	};
 
+	$scope.updateReadOnly = function (index, note_id, status, title) {
+		$http.put('/notes/read_only', {user_id: authService.getUserId(), note_id: note_id, read_only: status}).then(function (res) {
+			// flash success message to user, then remove after 3 seconds
+			$scope.success = "Successfully updated '"+ title +"' read only status to "+ status;
+			$timeout(function () {
+				$scope.success = "";
+			}, 3000);
+
+		}, function (res) {
+			$scope.error = "Failed to update '"+ title +"' read only status to "+ status;
+			$timeout(function () {
+				$scope.error = "";
+			}, 3000);
+			$scope.notes[index].read_only = !status;
+		});
+	};
+
 	$scope.deleteNote = function(index, note_id, title) {
 		$http({
 			url: '/notes',

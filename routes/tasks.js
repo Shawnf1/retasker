@@ -73,7 +73,7 @@ router.put('/read_only', function (req, res, next) {
 	}else if(req.body.read_only === undefined) {
 		res.status(400).send("No status sent.");
 	}else {
-		console.log("passed tests", req.body);
+		//console.log("passed tests", req.body);
 		User.findOneAndUpdate(
 			{"_id": req.body.user_id, "tasks._id" : req.body.task_id},
 			{
