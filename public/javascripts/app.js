@@ -371,7 +371,7 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			text: $scope.text,
 			tag: $scope.tagsArray,
 			read_only: $('#read_only').is(':checked'),
-			task: $scope.tasks.value,
+			task_link: $scope.tasks.value,
 			iteration: $scope.date,
 			sticky: ($scope.sticky) ? true : false
 		};

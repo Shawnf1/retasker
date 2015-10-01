@@ -12,7 +12,8 @@ var NoteSchema = new Schema({
 	read_only: {type: Boolean, default: false},
 	sticky: {type: Boolean, default: false},
 	tags: [{type: Schema.ObjectId, ref: 'Tag'}],
-	task: {type: Schema.ObjectId, ref: 'User.tasks'}
+	task_link: {type: Schema.ObjectId, ref: 'User.tasks'},
+	task_title: String
 });
 
 NoteSchema.pre('save', function(next) {
