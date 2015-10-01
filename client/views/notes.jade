@@ -68,4 +68,5 @@ table
             td.center {{ note.tags }}
             td.center {{ note.task_title }}
             td.center
-                button(data-id="{{ note._id }}" ng-click="deleteNote($index, note._id, note.title)") X
+                button(data-id="{{ note._id }}" ng-if="!note.read_only" ng-click="deleteNote($index, note._id, note.title)") X
+                span(ng-if="note.read_only") RO
