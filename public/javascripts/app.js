@@ -89,7 +89,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	$scope.freqOptions =
 		[
 			{
-				value: "",
+				//value: "",
 				text: "Select One"
 			},
 			{
@@ -196,7 +196,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			//frequency: $scope.freqOptions[$scope.freqOptions.indexOf( $scope.freq )].text,
 			start_date: $scope.start,
 			repetitions: $scope.reps.text,
-			read_only: $scope.read_only
+			read_only: ($scope.read_only) ? true : false
 		};
 		console.log("task", task);
 	// commented out while testing
