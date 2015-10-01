@@ -349,7 +349,7 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			}else {
 				$tasks.prop('disabled', true);
 			}
-			console.log("tasks", $scope.taskOptions);
+			//console.log("tasks", $scope.taskOptions);
 		});
 	};
 	if(authService.isAuthed()) {
