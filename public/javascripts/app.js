@@ -83,6 +83,7 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 	$scope.taskStatus = false;
 	//$scope.status = false;
 	//$scope.selected.status = false;
+	$scope.sortOptions = [{value:"title", text: "Title"}, {value: "frequency", text: "Frequency"}, {value: "start_date", text: "Started"}];
 	if(authService.isAuthed()) {
 		$scope.message = "Welcome Home!";
 		$http.get('/tasks', {params: {user_id: authService.getUserId()}}).then(function (res) {
@@ -195,7 +196,9 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 			$scope.selected.status = false;
 		});
 	};
-	//$scope.$watch('reps', function (newValue, oldValue) {
+	$scope.$watch('taskSort', function (newValue, oldValue) {
+		$scope.taskOrder = newValue.value;
+	});
 }]);
 
 app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$timeout', function($scope, $rootScope, authService, $http, $timeout){
