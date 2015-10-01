@@ -22,7 +22,7 @@
 
                 .form-group.col-xs-12.col-md-2
                     label(for="start") Start Date:
-                    input.form-control(type="date" ng-model="start")
+                    input.form-control(type="date" ng-model="start" placeholder="MM/DD/YYYY")
             .row
                 .form-group.col-xs-12.col-md-5
                     label(for="reps_slct") Repetitions:
@@ -68,4 +68,4 @@ table
                 input(type="checkbox" ng-model="task.read_only" ng-checked="task.read_only" ng-change="updateReadOnly($index, task._id, task.read_only, task.title)")
             td.center {{ task.tags }}
             td.center
-                button(data-id="{{ task._id }}" ng-click="endTask($index, task._id, task.title)") X
+                button(data-id="{{ task._id }}" ng-click="endTask($index, task._id, task.title)" ng-if="!task.pEnd") X

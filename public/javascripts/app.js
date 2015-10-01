@@ -1,4 +1,4 @@
-var app = angular.module('taskApp', ['ngRoute', 'ngTagsInput']);
+var app = angular.module('taskApp', ['ngRoute', 'ui.bootstrap']);
 
 app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider){
 	$locationProvider.html5Mode(true);
@@ -183,13 +183,6 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 
 
 	$scope.addTask = function () {
-		//$http.post('/tags', {tags: [{title: "test"}, {title: "test 2"}, {title: "test 3"}], user_id: authService.getUserId()}).then(function (res) {
-		////$http.post('/tags', {tags: [{title: "test"}], user_id: authService.getUserId()}).then(function (res) {
-		//	console.log("added tags");
-		//}, function (res) {
-		//	console.log("failed to add tags");
-		//});
-
 		var task = {
 			title: $scope.title,
 			desc: $scope.desc,
@@ -220,7 +213,6 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				$scope.success = "";
 			}, 3000);
 		}, function (res) {
-			//console.log(res.responseText);
 			$scope.error = res.responseText;
 		});
 	};
@@ -348,21 +340,6 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	};
 
 	$scope.deleteNote = function(index, note_id, title) {
-		//$http.delete('/notes', {user_id: authService.getUserId(), note_id: note_id}).then(function (res) {
-		//	$scope.notes.splice(index, 1);
-		//	// flash success message to user, then remove after 3 seconds
-		//	$scope.success = "Successfully deleted "+ title;
-		//	$timeout(function () {
-		//		$scope.success = "";
-		//	}, 3000);
-		//
-		//}, function (res) {
-		//	// flash fail message, remove after 3 seconds
-		//	$scope.error = "Failed to delete "+ title;
-		//	$timeout(function () {
-		//		$scope.error = "";
-		//	}, 3000);
-		//});
 		$http({
 			url: '/notes',
 			method: 'DELETE',
@@ -370,7 +347,6 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				user_id: authService.getUserId(),
 				note_id: note_id
 			},
-			//type: 'json'
 			headers: {"Content-Type": "application/json;charset=utf-8"}
 		}).then(function (res) {
 			$scope.notes.splice(index, 1);
