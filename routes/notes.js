@@ -4,11 +4,11 @@ var Note = require('../models/note.js').Model;
 var User = require('../models/user.js').Model;
 var Tag = require('../models/tag.js').Model;
 
-router.get('/', function(req, res, next){
+router.get('/:id?', function(req, res, next){
 	// get user id for query
-	var id = req.query.user_id;
+	var user_id = req.query.user_id;
 	// query for notes in user doc
-	User.findById(id, function (err, user) {
+	User.findById(user_id, function (err, user) {
 		if(err) {
 			res.status(400).send(err.message);
 		}
@@ -17,8 +17,19 @@ router.get('/', function(req, res, next){
 		if(user.notes.length == 0) {
 			res.status(200).send('No notes created.');
 		}else {
-			// send back notes array as json
-			res.status(200).json(user.notes);
+			// if looking for notes for a task, just return those
+			if(req.query.task_id) {
+				var temp = [];
+				user.notes.forEach(function (v, i, a) {
+					if(v.task_link == req.query.task_id) {
+						temp.push(v);
+					}
+				});
+				res.status(200).json(temp);
+			}else {
+				// send back notes array as json
+				res.status(200).json(user.notes);
+			}
 		}
 	});
 });

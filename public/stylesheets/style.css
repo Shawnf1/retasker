@@ -36,6 +36,10 @@ tr.task:hover, tr.note:hover {
     background-color: beige;
 }
 
+.selected {
+    background-color: beige;
+}
+
 #desc {
     display: block;
     width: 300px;

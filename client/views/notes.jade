@@ -55,6 +55,7 @@ table
             th.center Tags
             th.center Task
             th.center Delete
+    tbody
         tr.task(ng-show="status !== false")
             td.center(colspan="8") {{ status }}
         tr.task(ng-repeat="note in notes" data-id="{{ note._id }}")

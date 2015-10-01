@@ -1,5 +1,15 @@
 var app = angular.module('taskApp', ['ngRoute', 'ui.bootstrap']);
 
+var prettyDate = "MM/DD/YYYY";
+var fullDate = "MM/DD/YYYY h:mm:ss a";
+
+function formatDates (date) {
+	return {
+		full: moment(date).format(fullDate),
+		pretty: moment(date).format(prettyDate)
+	};
+}
+
 app.config(['$routeProvider', '$locationProvider', '$httpProvider', function($routeProvider, $locationProvider, $httpProvider){
 	$locationProvider.html5Mode(true);
 	$routeProvider.when('/login',
@@ -69,9 +79,33 @@ app.controller('loginCtrl', ['$scope', '$http', '$location', '$timeout', 'authSe
 
 app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '$rootScope', '$http', function($scope, authService, $location, $interval, $rootScope, $http){
 	$rootScope.user = authService.getUser();
-
+	var prettyDate = "MM/DD/YYYY";
+	$scope.taskStatus = false;
+	//$scope.selected.status = false;
 	if(authService.isAuthed()) {
 		$scope.message = "Welcome Home!";
+		$http.get('/tasks', {params: {user_id: authService.getUserId()}}).then(function (res) {
+			//console.log("res data: ", res.data);
+			$scope.header = "Tasks";
+			if(Array.isArray(res.data) && typeof res.data !== "string") {
+				$scope.error = "";
+				$scope.taskStatus = false;
+				$scope.tasks = res.data;
+				$scope.tasks.forEach(function (v, i, a) {
+					// for each of the dates in an object, creating a pretty format (shrunk to date only) and full (with time)
+
+					a[i].pStart = formatDates(a[i].start_date).pretty;
+
+				});
+			} else if(typeof res.data === "string") {
+				if(res.data == "No tasks created.") {
+					$scope.taskStatus = res.data;
+				}else {
+					$scope.error = res.data;
+				}
+			}
+			//console.log("updated", $scope.tasks);
+		});
 	}else {
 		$rootScope.user = { };
 		$scope.error = "You are not authorized to view this page";
@@ -79,6 +113,79 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 			$location.path('/');
 		}, 3000);
 	}
+
+	$scope.showTask = function (task, event) {
+		$(event.target).parent().addClass("selected");
+		var temp = task;
+		
+		//temp.fCreate = moment(temp.created_on).format(fullDate);
+		temp.fCreate = formatDates(temp.created_on).full;
+
+		//temp.fUpdate = moment(temp.updated_on).format(fullDate);
+		temp.fUpdate = formatDates(temp.updated_on).full;
+
+		//temp.fStart = moment(temp.start_date).format(fullDate);
+		temp.fStart = formatDates(temp.start_date).full;
+		
+		if(temp.end_date) {
+			//temp.fEnd = moment(temp.end_date).format(fullDate);
+			temp.fEnd = formatDates(temp.end_date).full;
+		}
+		//console.log("temp", temp);
+		//$scope.selected.status = true;
+		$scope.selected = temp;
+		$scope.loadNotes(temp._id);
+		//console.log("Clicked row", $scope.selected);
+	};
+
+	$scope.loadNotes = function (task_id) {
+		$http.get('/notes', {params: {user_id: authService.getUserId(), task_id: task_id}}).then(function (res) {
+			//console.log("res data: ", res.data);
+			//console.log("response", res);
+			$scope.notes = [];
+			if(Array.isArray(res.data) && typeof res.data !== "string") {
+				$scope.error = "";
+				//$scope.status = false;
+				var temp = res.data;
+				temp.forEach(function (v, i, a) {
+					// for each of the dates in an object, creating a pretty format (shrunk to date only) and full (with time)
+					var tempDate = formatDates(v.created_on);
+					a[i].pCreate = tempDate.pretty;
+					a[i].fCreate = tempDate.full;
+					//v.pCreate = moment(v.created_on).format(prettyDate);
+					//v.fCreate = moment(v.created_on).format(fullDate);
+
+					if(v.sticky) {
+						v.pIteration = "-";
+						v.fIteration = "No date for sticky items!";
+					}else {
+						temp = formatDates(v.iteration);
+						a[i].pIteration = temp.pretty;
+						a[i].fIteration = temp.pretty;
+
+						//v.pIteration = moment(v.iteration).format(prettyDate);
+						//v.fIteration = moment(v.iteration).format(fullDate);
+					}
+				});
+				$scope.notes = temp;
+				//console.log("updated", $scope.tasks);
+			}else if(typeof res.data === "string") {
+				// show error message if don't receive an array back
+				//console.log("logging data", res.data);
+
+				if(res.data == "No notes created.") {
+					$scope.status = res.data;
+				}else {
+					$scope.error = res.data;
+				}
+
+				//console.log("end note.show -> get");
+			}
+		}, function (res) {
+			$scope.selected.status = false;
+		});
+	};
+	//$scope.$watch('reps', function (newValue, oldValue) {
 }]);
 
 app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$timeout', function($scope, $rootScope, authService, $http, $timeout){
@@ -86,8 +193,6 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	$rootScope.user = authService.getUser();
 	$scope.freq = "";
 	$scope.reps = "";
-	var prettyDate = "MM/DD/YYYY";
-	var fullDate = "MM/DD/YYYY h:mm:ss a";
 	$scope.freqOptions =
 		[
 			{
@@ -296,8 +401,6 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	$scope.status = false;
 	$scope.header = "Notes";
 	$rootScope.user = authService.getUser();
-	var prettyDate = "MM/DD/YYYY";
-	var fullDate = "MM/DD/YYYY h:mm:ss a";
 
 	$scope.show = function () {
 		//console.log("user_id", authService.getUserId());
