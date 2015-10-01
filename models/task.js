@@ -7,10 +7,11 @@ var TaskSchema = new Schema({
 	title: {type: String, required: true},
 	desc: String,
 	frequency: String,
+	repetitions: String,
 	created_on: Date,
 	updated_on: Date,
 	start_date: Date,
-	repetitions: Number,
+	duration: Schema.Types.Mixed,
 	end_date: Date,
 	read_only: {type: Boolean, default: false},
 	tags: [{type: Schema.ObjectId,  ref: 'Tag'}]

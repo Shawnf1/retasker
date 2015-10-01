@@ -187,7 +187,32 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			$location.path('/');
 		}, 3000);
 	}
+	$duration = $('#duration');
+	$scope.$watch('reps', function (newValue, oldValue) {
+		console.log('watch fired, new value: ', newValue);
+		switch(newValue.value) {
+			case "indef":
+				$duration.attr({
+					disabled: true,
+					placeholder: '',
+					type: 'text'});
+				break;
+			case "times":
+				$duration.attr({
+					disabled: false,
+					placeholder: 'Number',
+					type: 'number',
+					min: 1});
 
+				break;
+			case "date":
+				$duration.attr({
+					disabled: false,
+					placeholder: 'Date (MM/DD/YYYY)',
+					type: 'text'});
+				break;
+		}
+	});
 
 	$scope.addTask = function () {
 		var task = {
@@ -199,33 +224,33 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			//frequency: $scope.freqOptions[$scope.freqOptions.indexOf( $scope.freq )].text,
 			start_date: $scope.start,
 			repetitions: $scope.reps.text,
+			duration: $scope.duration,
 			read_only: ($scope.read_only) ? true : false
 		};
-		console.log("task", task, $scope.start);
 	// commented out while testing
-		//$http.post('/tasks', {user_id: authService.getUserId(), task: task}).then(function (res) {
-		//	$scope.success = "Successfully inserted task.";
-		//	var temp = res.data;
-		//	temp.pCreate = moment(temp.created_on).format(prettyDate);
-		//	temp.fCreate = moment(temp.created_on).format(fullDate);
-		//
-		//	temp.pUpdate = moment(temp.updated_on).format(prettyDate);
-		//	temp.fUpdate = moment(temp.updated_on).format(fullDate);
-		//
-		//	temp.pStart = moment(temp.start_date).format(prettyDate);
-		//	temp.fStart = moment(temp.start_date).format(fullDate);
-		//
-		//	if(temp.end_date) {
-		//		temp.pEnd = moment(temp.end_date).format(prettyDate);
-		//		temp.fEnd = moment(temp.end_date).format(fullDate);
-		//	}
-		//	$scope.tasks.push(temp);
-		//	$timeout(function () {
-		//		$scope.success = "";
-		//	}, 3000);
-		//}, function (res) {
-		//	$scope.error = res.responseText;
-		//});
+		$http.post('/tasks', {user_id: authService.getUserId(), task: task}).then(function (res) {
+			$scope.success = "Successfully inserted task.";
+			var temp = res.data;
+			temp.pCreate = moment(temp.created_on).format(prettyDate);
+			temp.fCreate = moment(temp.created_on).format(fullDate);
+
+			temp.pUpdate = moment(temp.updated_on).format(prettyDate);
+			temp.fUpdate = moment(temp.updated_on).format(fullDate);
+
+			temp.pStart = moment(temp.start_date).format(prettyDate);
+			temp.fStart = moment(temp.start_date).format(fullDate);
+
+			if(temp.end_date) {
+				temp.pEnd = moment(temp.end_date).format(prettyDate);
+				temp.fEnd = moment(temp.end_date).format(fullDate);
+			}
+			$scope.tasks.push(temp);
+			$timeout(function () {
+				$scope.success = "";
+			}, 3000);
+		}, function (res) {
+			$scope.error = res.responseText;
+		});
 	};
 
 	$scope.updateReadOnly = function (index, task_id, status, title) {
