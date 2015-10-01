@@ -23,7 +23,7 @@
                 tr.task(ng-repeat="task in tasks" data-id="{{ task._id }}" ng-click="showTask(task, $event)")
                     td.center {{ task.title }}
                     td.center {{ task.frequency }}
-                    td.center {{ task.start_date }}
+                    td.center {{ task.pStart }}
 
     .col-xs-6(ng-show="selected")
         .row

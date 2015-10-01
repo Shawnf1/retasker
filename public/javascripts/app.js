@@ -116,29 +116,37 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 	}
 
 	$scope.showTask = function (task, event) {
-		$('#tasks .selected').removeClass('selected');
+		var $elem = $(event.target);
+		// hide additional info if select same task
+		if($elem.parent().hasClass('selected')) {
+			$elem.parent().removeClass('selected');
+			$scope.selected = false;
+		}else {
+			// else switch selected row, load info
+			$('#tasks .selected').removeClass('selected');
 
-		$(event.target).parent().addClass("selected");
-		var temp = task;
-		
-		//temp.fCreate = moment(temp.created_on).format(fullDate);
-		temp.fCreate = formatDates(temp.created_on).full;
+			$elem.parent().addClass("selected");
+			var temp = task;
 
-		//temp.fUpdate = moment(temp.updated_on).format(fullDate);
-		temp.fUpdate = formatDates(temp.updated_on).full;
+			//temp.fCreate = moment(temp.created_on).format(fullDate);
+			temp.fCreate = formatDates(temp.created_on).full;
 
-		//temp.fStart = moment(temp.start_date).format(fullDate);
-		temp.fStart = formatDates(temp.start_date).full;
-		
-		if(temp.end_date) {
-			//temp.fEnd = moment(temp.end_date).format(fullDate);
-			temp.fEnd = formatDates(temp.end_date).full;
+			//temp.fUpdate = moment(temp.updated_on).format(fullDate);
+			temp.fUpdate = formatDates(temp.updated_on).full;
+
+			//temp.fStart = moment(temp.start_date).format(fullDate);
+			temp.fStart = formatDates(temp.start_date).full;
+
+			if(temp.end_date) {
+				//temp.fEnd = moment(temp.end_date).format(fullDate);
+				temp.fEnd = formatDates(temp.end_date).full;
+			}
+			//console.log("temp", temp);
+			//$scope.selected.status = true;
+			$scope.selected = temp;
+			$scope.loadNotes(temp._id);
+			//console.log("Clicked row", $scope.selected);
 		}
-		//console.log("temp", temp);
-		//$scope.selected.status = true;
-		$scope.selected = temp;
-		$scope.loadNotes(temp._id);
-		//console.log("Clicked row", $scope.selected);
 	};
 
 	$scope.loadNotes = function (task_id) {
