@@ -209,8 +209,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 	$scope.freqOptions =
 		[
 			{
-				//value: "",
-				text: "Select One"
+				text: "Select Frequency"
 			},
 			{
 				value: "daily",
@@ -244,6 +243,9 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 
 	$scope.repOptions =
 		[
+			{
+				text: "Select Repetitions"
+			},
 			{
 				value: "indef",
 				text: "Indefinitely"
@@ -312,7 +314,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			case "indef":
 				$duration.attr({
 					disabled: true,
-					placeholder: '',
+					placeholder: 'Indefinite...',
 					type: 'text'});
 				break;
 			case "times":
@@ -326,7 +328,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			case "date":
 				$duration.attr({
 					disabled: false,
-					placeholder: 'Date (MM/DD/YYYY)',
+					placeholder: 'End Date (MM/DD/YYYY)',
 					type: 'text'});
 				break;
 		}

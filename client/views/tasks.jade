@@ -7,33 +7,42 @@
     form.form-inline(role="form" ng-submit="addTask()")
         fieldset
             legend Add A New Task
-            .row
-                .form-group.col-xs-12.col-md-2
-                    label(for="title") Task Name:
-                    input.form-control(required="true" ng-model="title")
+            .row.col-xs-12
+                .form-group.col-xs-12.col-sm-5.col-md-3
+                    //label(for="title") Task Name:
+                    input.form-control.inputs(type="text" required="true" ng-model="title" placeholder="Task Name")
 
-                .form-group.col-xs-12.col-md-4
-                    label(for="desc") Description:
-                    textarea#desc.form-control(ng-model="desc")
+                .form-group.col-xs-12.col-sm-5.col-md-3
+                    //label(for="desc") Description:
+                    textarea#desc.form-control(ng-model="desc" placeholder="Description")
 
-                .form-group.col-xs-12.col-md-2
-                    label(for="freq_slct") Frequency:
+                .form-group.col-xs-12.col-sm-5.col-md-2
+                    //label(for="freq_slct") Frequency:
+                    //br
                     select#freq_slct.form-control(ng-init="freq = freqOptions[0]" ng-model="freq" ng-options="freq.text for freq in freqOptions track by freq.value" required="true")
 
-                .form-group.col-xs-12.col-md-2
-                    label(for="start") Start Date:
-                    input#start.form-control(ng-model="start" placeholder="Date (MM/DD/YYYY)")
-            .row
-                .form-group.col-xs-12.col-md-5
-                    label(for="reps_slct") Repetitions:
-                    select#reps_slct.form-control(ng-init="reps = repOptions[0]" ng-model="reps" ng-options="rep.text for rep in repOptions track by rep.value")
-                    input#duration(ng-model="duration" placeholder="Duration")
+                .form-group.col-xs-12.col-sm-5.col-md-2
+                    //label(for="reps_slct") Repetitions:
+                    //br
+                    select#reps_slct.form-control(ng-init="reps = repOptions[0]" ng-model="reps" ng-options="rep.text for rep in repOptions track by rep.value" required="true")
+            .row.col-xs-12
 
-                .form-group.col-xs-12.col-md-2
-                    label
-                        input.form-control(type="checkbox" ng-model="read_only")
-                        | &nbsp Read-only
-                .form-group.col-xs-6.col-md-2
+                .form-group.col-xs-12.col-sm-5.col-md-2
+                    label(for="read_only")
+                        input#read_only.form-control(type="checkbox" ng-model="read_only")
+                        | &nbsp&nbsp Read Only
+
+                .form-group.col-xs-12.col-sm-5.col-md-3
+                    //label(for="start") Start Date:
+                    //br
+                    input#start.form-control.inputs(type="text" ng-model="start" placeholder="Start Date (MM/DD/YYYY)")
+
+                .form-group.col-xs-12.col-sm-5.col-md-3
+                    //label(for="duration") Duration:
+                    //br
+                    input#duration.form-control.inputs(type="text" ng-model="duration" placeholder="Duration")
+
+                .form-group.col-xs-6.col-sm-5.col-md-2
                     button.form-control Save
 
 table
