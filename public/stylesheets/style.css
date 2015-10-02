@@ -51,6 +51,10 @@ input[type="text"].inputs {
     display: inline-block;
 }
 
+.filters {
+    max-width:200px;
+}
+
 table {
     margin-right: 50px;
 }
@@ -69,4 +73,9 @@ table {
 
 #end_date {
     width: 125px;
+}
+
+.col-centered {
+    display: inline-block;
+    float: none;
 }
