@@ -379,6 +379,14 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				temp.pEnd = moment(temp.end_date).format(prettyDate);
 				temp.fEnd = moment(temp.end_date).format(fullDate);
 			}
+			// reset form
+			$scope.title = "";
+			$scope.desc = "";
+			$scope.freq = $scope.freqOptions[0];
+			$scope.reps = $scope.repOptions[0];
+			$scope.read_only = false;
+			$scope.start = "";
+			$scope.duration = "";
 			$scope.status = false;
 			$scope.tasks.push(temp);
 			$timeout(function () {
@@ -527,9 +535,15 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				temp.pIteration = moment(temp.iteration).format(prettyDate);
 				temp.fIteration = moment(temp.iteration).format(fullDate);
 			}
-			$scope.
-			//console.log("Post notes push", res.data);
 			$scope.notes.push(res.data);
+			// clear out form on success
+			$scope.title = "";
+			$scope.text = "";
+			$scope.sticky = false;
+			$scope.read_only = false;
+			$scope.date = "";
+			$scope.tasks = $scope.taskOptions[0];
+			//console.log("Post notes push", res.data);
 		}, function (res) {
 			//console.log(res.responseText);
 			$scope.error = res.responseText;

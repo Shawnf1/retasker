@@ -51,7 +51,8 @@ app.use('/', index);
 //app.use('/', expressJwt({secret: 'kindaSecret'}));
 app.use(function (err, req, res, next) {
 	if (err.name === 'UnauthorizedError') {
-		res.send(401, 'invalid token...');
+		//res.send(401, 'invalid token...');
+		res.redirect('/');
 	}
 });
 
