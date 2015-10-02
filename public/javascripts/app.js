@@ -170,32 +170,46 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 						v.fIteration = "No date for sticky items!";
 					}else {
 						tempDate = formatDates(v.iteration);
-						a[i].pIteration = temp.pretty;
-						a[i].fIteration = temp.pretty;
+						a[i].pIteration = tempDate.pretty;
+						a[i].fIteration = tempDate.pretty;
+					}
+					// if text in note
+					if(v.text) {
+						// if long text
+						if(v.text.length > 10) {
+							a[i].abbr = v.text.substr(0, 10) +"...";
+						}
 					}
 				});
 				$scope.selected.Notestatus = true;
 				$scope.notes = temp;
-				//console.log("Notes", temp.length, temp);
-				//console.log("updated", $scope.tasks);
 			}else if(typeof res.data === "string") {
 				// show error message if don't receive an array back
-				//console.log("logging data", res.data);
 				$scope.selected.Notestatus = false;
 				if(res.data == "No notes created.") {
-					//$scope.selected.status = true;
-					//$scope.selected.noteStatus = false;
 					$scope.selected.length = res.data;
 				}else {
-					//$scope.selected.Notestatus = false;
 					$scope.error = res.data;
 				}
-				//console.log("end note.show -> get");
 			}
 		}, function (res) {
 			$scope.selected.status = false;
 		});
 	};
+
+	$scope.expandNote = function (note_id, event) {
+		var $elem = $(event.target);
+		// if already selected, remove class and clear out note text showing
+		if($elem.hasClass('selected')) {
+			$elem.removeClass('selected');
+			$scope.selectedNote = "";
+		}else {
+			// add class to show note text row
+			$(event.target).addClass('selected');
+			$scope.selectedNote = note_id;
+		}
+	};
+
 	$scope.$watch('taskSort', function (newValue, oldValue) {
 		$scope.taskOrder = newValue.value;
 	});

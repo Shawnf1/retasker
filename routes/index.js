@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
 
 // catch all
 router.get('/*', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'Retasker' });
 });
 
 module.exports = router;
