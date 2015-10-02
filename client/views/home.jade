@@ -79,7 +79,7 @@
                 .col-xs-8 {{ selected.tags.length == 0 ? 'None' : selected.tags }}
             .row
                 .col-xs-12
-                    table
+                    table#notesTable
                         thead
                             tr
                                 th.center.header(colspan="6") Notes for {{ selected.title }}
@@ -93,7 +93,7 @@
                         tbody
                             tr(ng-show="!selected.Notestatus")
                                 td.center(colspan="6") {{ selected.length }}
-                            tr.note(ng-show="selected.Notestatus" ng-repeat-start="note in notes" ng-click="expandNote(note._id, $event)" ng-mouseenter="selectedNote = note._id" ng-mouseleave="selectedNote = ''")
+                            tr.note(ng-show="selected.Notestatus" ng-repeat-start="note in notes" ng-click="expandNote(note._id, $event)")
                                 td.center {{ note.title }}
                                 td.center {{ note.abbr ? note.abbr : note.text }}
                                 td.center(title="{{ note.fCreate }}") {{ note.pCreate }}
@@ -101,5 +101,5 @@
                                 td.center
                                     input(type="checkbox" ng-checked="note.read_only" disabled="true")
                                 td.center {{ note.tags.length == 0 ? '-' : note.tags }}
-                            tr(ng-repeat-end ng-show="selectedNote ==  note._id")
+                            tr(ng-repeat-end ng-if="selectedNote ==  note._id")
                                 td.center(colspan="6") {{ (note.text) ? note.text : "No note text" }}

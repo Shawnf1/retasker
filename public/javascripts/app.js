@@ -205,11 +205,35 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 			$parent.removeClass('selected');
 			$scope.selectedNote = "";
 		}else {
+			//$('#notesTable')
 			// add class to show note text row
 			$parent.addClass('selected');
 			$scope.selectedNote = note_id;
 		}
 	};
+
+	// from jade
+	//ng-mouseenter="selectedNote = note._id" ng-mouseleave="leave($event)"
+
+	//$scope.leave = function (event) {
+	//	var $elem = $(event.target);
+	//	//console.log("mouse leave", !$elem.parent().hasClass('selected'));
+	//	// if row is not selected (from click), take away the selected status so will hide.
+	//	// else was clicked and should stay visible
+	//	if(!$elem.parent().hasClass('selected')) {
+	//		console.log("hide the row");
+	//		$scope.selectedNote = "";
+	//	}
+	//	//$scope.selectedNote = "";
+	//	console.log($scope.selectedNote);
+	//};
+	//
+	//$scope.$watch('selectedNote', function (newValue, oldValue) {
+	//	$scope.oldSelect = oldValue;
+	//	if(newValue === undefined) {
+	//		$scope.selectedNote = $scope.oldSelect;
+	//	}
+	//});
 
 	$scope.$watch('taskSort', function (newValue, oldValue) {
 		$scope.taskOrder = newValue.value;
