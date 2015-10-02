@@ -199,13 +199,14 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 
 	$scope.expandNote = function (note_id, event) {
 		var $elem = $(event.target);
+		var $parent = $elem.parent();
 		// if already selected, remove class and clear out note text showing
-		if($elem.hasClass('selected')) {
-			$elem.removeClass('selected');
+		if($parent.hasClass('selected')) {
+			$parent.removeClass('selected');
 			$scope.selectedNote = "";
 		}else {
 			// add class to show note text row
-			$(event.target).addClass('selected');
+			$parent.addClass('selected');
 			$scope.selectedNote = note_id;
 		}
 	};
@@ -457,7 +458,7 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 					v.fCreate = moment(v.created_on).format(fullDate);
 
 					if(v.sticky) {
-						v.pIteration = "-";
+						v.pIteration = "(Sticky)";
 						v.fIteration = "No date for sticky items!";
 					}else {
 						v.pIteration = moment(v.iteration).format(prettyDate);
@@ -529,7 +530,7 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			temp.pCreate = moment(res.data.created_on).format(prettyDate);
 			temp.fCreate = moment(res.data.created_on).format(fullDate);
 			if(temp.sticky) {
-				temp.pIteration = "-";
+				temp.pIteration = "(Sticky)";
 				temp.fIteration = "No date for sticky items!";
 			}else {
 				temp.pIteration = moment(temp.iteration).format(prettyDate);
