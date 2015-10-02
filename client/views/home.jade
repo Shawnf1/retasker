@@ -5,35 +5,38 @@
             |{{ error }}
         span.success
             | {{ success }} {{ time }}
-.container-well
-    .row
-        .col-xs-6.col-sm-2
+.container-fluid
+        //.row
+        .col-xs-6
             label(for="tasks") Sort By:
             select#tasks.form-control(ng-init="taskSort = sortOptions[0]" ng-model="taskSort" ng-options="sort.text for sort in sortOptions track by sort.value")
             label(for="filter") Filter:
             input#filter.form-control(ng-model="filter")
-    .row
-        .col-xs-6
+        //.row
+        //.col-xs-6
             //span.center Tasks
             //span {{ title }}
-            table#tasks
-                thead
-                    tr
-                        th.center.header(colspan="3") Tasks
-                    tr
-                        th.center Title
-                        th.center Frequency
-                        th.center Started
-                tbody
-                    tr.task(ng-show="taskStatus !== false")
-                        td.center(colspan="3") {{ taskStatus }}
-                    //tr.task(ng-repeat="task in tasks | orderBy: '{{ taskSort.value }}'" data-id="{{ task._id }}" ng-click="showTask(task, $event)")
-                    tr.task(ng-repeat="task in tasks | filter: {title: filter} | orderBy: taskOrder" data-id="{{ task._id }}" ng-click="showTask(task, $event)")
-                        td.center {{ task.title }}
-                        td.center {{ task.frequency }}
-                        td.center {{ task.pStart }}
+        table#tasks
+            thead
+                tr
+                    th.center.header(colspan="3") Tasks
+                tr
+                    th.center Title
+                    th.center Frequency
+                    th.center Started
+            tbody
+                tr.task(ng-show="taskStatus !== false")
+                    td.center(colspan="3") {{ taskStatus }}
+                //tr.task(ng-repeat="task in tasks | orderBy: '{{ taskSort.value }}'" data-id="{{ task._id }}" ng-click="showTask(task, $event)")
+                tr.task(ng-repeat="task in tasks | filter: {title: filter} | orderBy: taskOrder" data-id="{{ task._id }}" ng-click="showTask(task, $event)")
+                    td.center {{ task.title }}
+                    td.center {{ task.frequency }}
+                    td.center {{ task.pStart }}
 
         .col-xs-6(ng-show="selected")
+            .row
+                .col-xs-12
+                h2.center Details
             .row
                 .col-xs-2
                     Strong Title:
