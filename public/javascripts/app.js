@@ -493,7 +493,7 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 			iteration: $scope.date,
 			sticky: ($scope.sticky) ? true : false
 		};
-		console.log($scope.read_only);
+		//console.log($scope.read_only);
 		$http.post('/notes', {user_id: authService.getUserId(), note: note}).then(function (res) {
 			$scope.success = "Successfully added note.";
 			$timeout(function () {

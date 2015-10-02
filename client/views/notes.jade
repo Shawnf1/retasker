@@ -10,39 +10,46 @@
     form.form-inline(role="form" ng-submit="addNote()")
         fieldset
             legend Add A New Note
-            .row
-                .form-group.col-xs-12.col-md-2
-                    label(for="title") Note Name:
-                    input.form-control(required="true" ng-model="title" highlight-matched-text=false select-first-match=false)
+            .row.col-xs-12
+                .form-group.col-xs-12.col-sm-4.col-md-3
+                    //label(for="title") Note Name:
+                    input.form-control.inputs(type="text" required="true" ng-model="title" highlight-matched-text=false select-first-match=false placeholder="Note Name")
+
+                .form-group.col-xs-12.col-sm-4.col-md-3
+                    //label(for="text") Text:
+                    //br
+                    textarea#text.form-control.inputs(type="text" ng-model="text" placeholder="Note Text")
+
                 //.form-group.col-xs-12.col-md-2.top-buffer(ng-controller="tagCtrl")
                     label(for="tags") Tags:
                     div#tags(auto-complete url="/tags" model="tags")
-                .form-group.col-xs-12.col-md-1
-                   label
-                       input.form-control(type="checkbox" ng-model="sticky" title="Sticky note for task: no completion date, will float to top of task. Use for reminders or template for note copying. If using as template, recommended to use read-only to prevent accidental deletion or editing.")
-                       | &nbsp Sticky
-                .form-group.col-xs-12.col-md-2
-                    label(for="date") Completion Date:
-                    input#date.form-control(ng-model="date" placeholder="Date (MM/DD/YYYY)")
-            .row
-                .form-group.col-xs-12.col-md-4
-                    label(for="text") Text:
-                    br
-                    textarea#text.form-control(ng-model="text")
-                .form-group.col-xs-12.col-md-3
-                    label(for="tasks") Tasks:
-                    select#tasks.form-control(ng-init="tasks = taskOptions[0]" ng-model="tasks" ng-options="task.text for task in taskOptions track by task.value")
-                .form-group.col-xs-12.col-md-2
+
+                .form-group.col-xs-12.col-sm-1.col-md-1
+                    label
+                        input.form-control(type="checkbox" ng-model="sticky" title="Sticky note for task: no completion date, will float to top of task. Use for reminders or template for note copying. If using as template, recommended to use read-only to prevent accidental deletion or editing.")
+                        | &nbsp&nbsp Sticky
+
+                .form-group.col-xs-12.col-sm-1.col-md-2
                     label
                         input#read_only.form-control(type="checkbox" ng-model="read_only")
                         | &nbsp Read-only
+            .row
+
+                .form-group.col-xs-12.col-sm-4.col-md-3
+                    //label(for="date") Completion Date:
+                    input#date.form-control.inputs(type="text" ng-model="date" placeholder="Completion Date (MM/DD/YYYY)")
+
+                .form-group.col-xs-12.col-sm-4.col-md-2
+                    //label(for="tasks") Tasks:
+                    select#tasks.form-control.inputs(ng-init="tasks = taskOptions[0]" ng-model="tasks" ng-options="task.text for task in taskOptions track by task.value")
+
 
                 .form-group.col-xs-6.col-md-2
                     button.form-control Save
 
     //span(ng-repeat="task in tasks")
 
-table
+table.table-responsive
     thead
         tr
             th.center.header(colspan="8") {{ header }}
