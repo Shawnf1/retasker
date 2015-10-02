@@ -217,6 +217,7 @@ app.controller('mainCtrl', ['$scope', 'authService', '$location', '$interval', '
 
 app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$timeout', function($scope, $rootScope, authService, $http, $timeout){
 	$scope.status = false;
+	$scope.tasks = [];
 	$rootScope.user = authService.getUser();
 	$scope.freq = "";
 	$scope.reps = "";
@@ -378,6 +379,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				temp.pEnd = moment(temp.end_date).format(prettyDate);
 				temp.fEnd = moment(temp.end_date).format(fullDate);
 			}
+			$scope.status = false;
 			$scope.tasks.push(temp);
 			$timeout(function () {
 				$scope.success = "";
@@ -429,6 +431,7 @@ app.controller('taskCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$timeout', function($scope, $rootScope, authService, $http, $timeout){
 	$scope.status = false;
 	$scope.header = "Notes";
+	$scope.notes = [];
 	$rootScope.user = authService.getUser();
 
 	$scope.show = function () {
@@ -510,6 +513,7 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 		//console.log($scope.read_only);
 		$http.post('/notes', {user_id: authService.getUserId(), note: note}).then(function (res) {
 			$scope.success = "Successfully added note.";
+			$scope.status = false;
 			$timeout(function () {
 				$scope.success = "";
 			}, 3000);
@@ -523,7 +527,7 @@ app.controller('noteCtrl', ['$scope', '$rootScope', 'authService', '$http', '$ti
 				temp.pIteration = moment(temp.iteration).format(prettyDate);
 				temp.fIteration = moment(temp.iteration).format(fullDate);
 			}
-
+			$scope.
 			//console.log("Post notes push", res.data);
 			$scope.notes.push(res.data);
 		}, function (res) {

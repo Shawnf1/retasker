@@ -39,12 +39,12 @@
                     //label(for="date") Completion Date:
                     input#date.form-control.inputs(type="text" ng-model="date" placeholder="Completion Date (MM/DD/YYYY)")
 
-                .form-group.col-xs-12.col-sm-4.col-md-2
+                .form-group.col-xs-12.col-sm-4.col-md-3
                     //label(for="tasks") Tasks:
                     select#tasks.form-control.inputs(ng-init="tasks = taskOptions[0]" ng-model="tasks" ng-options="task.text for task in taskOptions track by task.value")
 
 
-                .form-group.col-xs-6.col-md-2
+                .form-group.col-xs-6.col-sm-2.col-md-2
                     button.form-control Save
 
     //span(ng-repeat="task in tasks")
